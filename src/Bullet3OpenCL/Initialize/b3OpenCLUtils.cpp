@@ -23,7 +23,7 @@ bool gDebugSkipLoadingBinary = false;
 
 #include <string.h>
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #pragma warning(disable : 4996)
 #endif
 #include "b3OpenCLUtils.h"
@@ -72,9 +72,9 @@ static const char* spPlatformVendor =
 #endif
 
 void MyFatalBreakAPPLE(const char* errstr,
-					   const void* private_info,
-					   size_t cb,
-					   void* user_data)
+					   const void* /*private_info*/,
+					   size_t /*cb*/,
+					   void* /*user_data*/)
 {
 	const char* patloc = strstr(errstr, "Warning");
 	//find out if it is a warning or error, exit if error
@@ -100,7 +100,7 @@ int b3OpenCLUtils_clewInit()
 	const char* cl = "OpenCL.dll";
 #elif defined __APPLE__
 	const char* cl = "/System/Library/Frameworks/OpenCL.framework/Versions/Current/OpenCL";
-#else  //presumable Linux? \
+#else  //presumable Linux?
 	   //linux (tested on Ubuntu 12.10 with Catalyst 13.4 beta drivers, not that there is no symbolic link from libOpenCL.so
 	const char* cl = "libOpenCL.so.1";
 	result = clewInit(cl);
@@ -208,7 +208,7 @@ void b3OpenCLUtils_printPlatformInfo(cl_platform_id platform)
 	b3Printf("  CL_PLATFORM_VERSION: \t\t\t%s\n", platformInfo.m_platformVersion);
 }
 
-cl_context b3OpenCLUtils_createContextFromPlatform(cl_platform_id platform, cl_device_type deviceType, cl_int* pErrNum, void* pGLContext, void* pGLDC, int preferredDeviceIndex, int preferredPlatformIndex)
+cl_context b3OpenCLUtils_createContextFromPlatform(cl_platform_id platform, cl_device_type deviceType, cl_int* pErrNum, void* pGLContext, void* /*pGLDC*/, int preferredDeviceIndex, int /*preferredPlatformIndex*/)
 {
 	cl_context retContext = 0;
 	cl_int ciErrNum = 0;
@@ -237,7 +237,7 @@ cl_context b3OpenCLUtils_createContextFromPlatform(cl_platform_id platform, cl_d
 #endif  //_WIN32
 	num_entries = B3_MAX_CL_DEVICES;
 
-	num_devices = -1;
+	num_devices = (cl_uint)-1;
 
 	ciErrNum = clGetDeviceIDs(
 		platform,
@@ -336,7 +336,7 @@ cl_context b3OpenCLUtils_createContextFromType(cl_device_type deviceType, cl_int
 				return NULL;
 			}
 
-			if (preferredPlatformIndex >= 0 && i == preferredPlatformIndex)
+			if (preferredPlatformIndex >= 0 && (int)i == preferredPlatformIndex)
 			{
 				cl_platform_id tmpPlatform = platforms[0];
 				platforms[0] = platforms[i];
@@ -564,7 +564,7 @@ void b3OpenCLUtils_printDeviceInfo(cl_device_id device)
 static const char* strip2(const char* name, const char* pattern)
 {
 	size_t const patlen = strlen(pattern);
-	size_t patcnt = 0;
+	size_t patcnt = 0; (void)patcnt;
 	const char* oriptr;
 	const char* patloc;
 	// find how many times the pattern occurs in the original string
@@ -613,11 +613,9 @@ cl_program b3OpenCLUtils_compileCLProgramFromString(cl_context clContext, cl_dev
 	if (clFileNameForCaching && !(disableBinaryCaching || gDebugSkipLoadingBinary || gDebugForceLoadingFromSource))
 	{
 #ifdef _WIN32
-		char* bla = 0;
-
 		//printf("searching for %s\n", binaryFileName);
 
-		FILETIME modtimeBinary;
+		FILETIME modtimeBinary = {};
 		CreateDirectoryA(sCachedBinaryPath, 0);
 		{
 			HANDLE binaryFileHandle = CreateFileA(binaryFileName, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
@@ -675,7 +673,7 @@ cl_program b3OpenCLUtils_compileCLProgramFromString(cl_context clContext, cl_dev
 
 				if (srcFileHandle != INVALID_HANDLE_VALUE)
 				{
-					FILETIME modtimeSrc;
+					FILETIME modtimeSrc = {};
 					if (GetFileTime(srcFileHandle, NULL, NULL, &modtimeSrc) == 0)
 					{
 						DWORD errorCode;
@@ -760,6 +758,7 @@ cl_program b3OpenCLUtils_compileCLProgramFromString(cl_context clContext, cl_dev
 			binary = (char*)malloc(sizeof(char) * binarySize);
 			int bytesRead;
 			bytesRead = fread(binary, sizeof(char), binarySize, file);
+			(void)bytesRead;
 			fclose(file);
 
 			m_cpProgram = clCreateProgramWithBinary(clContext, 1, &device, &binarySize, (const unsigned char**)&binary, 0, &status);
@@ -828,6 +827,7 @@ cl_program b3OpenCLUtils_compileCLProgramFromString(cl_context clContext, cl_dev
 					kernelSrc = (char*)malloc(kernelSize + 1);
 					int readBytes;
 					readBytes = fread((void*)kernelSrc, 1, kernelSize, file);
+					(void)readBytes;
 					kernelSrc[kernelSize] = 0;
 					fclose(file);
 					kernelSource = kernelSrc;

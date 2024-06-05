@@ -986,7 +986,7 @@ void btWorldImporter::convertConstraintFloat(btTypedConstraintFloatData* constra
 						dof->setStiffness(i + 3, dofData->m_angularSpringStiffness.m_floats[i], (dofData->m_angularSpringStiffnessLimited[i] != 0));
 						dof->setEquilibriumPoint(i + 3, dofData->m_angularEquilibriumPoint.m_floats[i]);
 						dof->enableSpring(i + 3, dofData->m_angularEnableSpring[i] != 0);
-						dof->setDamping(i + 3, dofData->m_angularSpringDamping.m_floats[i], dofData->m_angularSpringDampingLimited[i]);
+						dof->setDamping(i + 3, dofData->m_angularSpringDamping.m_floats[i], dofData->m_angularSpringDampingLimited[i] != 0);
 					}
 				}
 			}
@@ -1304,7 +1304,7 @@ void btWorldImporter::convertConstraintDouble(btTypedConstraintDoubleData* const
 					//6-dof: 3 linear followed by 3 angular
 					for (i = 0; i < 3; i++)
 					{
-						dof->setStiffness(i, dofData->m_linearSpringStiffness.m_floats[i], dofData->m_linearSpringStiffnessLimited[i]);
+						dof->setStiffness(i, dofData->m_linearSpringStiffness.m_floats[i], dofData->m_linearSpringStiffnessLimited[i] != 0);
 						dof->setEquilibriumPoint(i, dofData->m_linearEquilibriumPoint.m_floats[i]);
 						dof->enableSpring(i, dofData->m_linearEnableSpring[i] != 0);
 						dof->setDamping(i, dofData->m_linearSpringDamping.m_floats[i], (dofData->m_linearSpringDampingLimited[i] != 0));
@@ -1602,7 +1602,7 @@ void btWorldImporter::setDynamicsWorldInfo(const btVector3& gravity, const btCon
 	}
 }
 
-btRigidBody* btWorldImporter::createRigidBody(bool isDynamic, btScalar mass, const btTransform& startTransform, btCollisionShape* shape, const char* bodyName)
+btRigidBody* btWorldImporter::createRigidBody(bool /*isDynamic*/, btScalar mass, const btTransform& startTransform, btCollisionShape* shape, const char* bodyName)
 {
 	btVector3 localInertia;
 	localInertia.setZero();
@@ -1743,7 +1743,7 @@ btBvhTriangleMeshShape* btWorldImporter::createBvhTriangleMeshShape(btStridingMe
 	m_allocatedCollisionShapes.push_back(ts);
 	return ts;
 }
-btCollisionShape* btWorldImporter::createConvexTriangleMeshShape(btStridingMeshInterface* trimesh)
+btCollisionShape* btWorldImporter::createConvexTriangleMeshShape(btStridingMeshInterface* /*trimesh*/)
 {
 	return 0;
 }
@@ -1754,6 +1754,7 @@ btGImpactMeshShape* btWorldImporter::createGimpactShape(btStridingMeshInterface*
 	m_allocatedCollisionShapes.push_back(shape);
 	return shape;
 #else
+	(void)trimesh;
 	return 0;
 #endif
 }

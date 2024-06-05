@@ -96,7 +96,7 @@ btReducedDeformableBody* btReducedDeformableBodyHelpers::createFromVtkFile(btSof
 	}
 	btReducedDeformableBody* rsb = new btReducedDeformableBody(&worldInfo, n_points, &X[0], 0);
 
-	for (int i = 0; i < n_tets; ++i)
+	for (unsigned int i = 0; i < n_tets; ++i)
 	{
 		const Index& ni = indices[i];
 		rsb->appendTetra(ni[0], ni[1], ni[2], ni[3]);
@@ -112,8 +112,8 @@ btReducedDeformableBody* btReducedDeformableBodyHelpers::createFromVtkFile(btSof
 
 	btSoftBodyHelpers::generateBoundaryFaces(rsb);
 	rsb->initializeDmInverse();
-	rsb->m_tetraScratches.resize(rsb->m_tetras.size());
-	rsb->m_tetraScratchesTn.resize(rsb->m_tetras.size());
+	// rsb->m_tetraScratches.resize(rsb->m_tetras.size());
+	// rsb->m_tetraScratchesTn.resize(rsb->m_tetras.size());
 	printf("Nodes:  %u\r\n", rsb->m_nodes.size());
 	printf("Links:  %u\r\n", rsb->m_links.size());
 	printf("Faces:  %u\r\n", rsb->m_faces.size());
@@ -188,14 +188,14 @@ void btReducedDeformableBodyHelpers::readBinaryMat(btReducedDeformableBody::tDen
 
 	// read data
 	mat.resize(n_modes);
-	for (int i = 0; i < n_modes; ++i) 
+	for (unsigned int i = 0; i < n_modes; ++i) 
 	{
-		for (int j = 0; j < n_full; ++j)
+		for (unsigned int j = 0; j < n_full; ++j)
 		{
 			double temp;
 			f_in.read((char*)&temp, sizeof(double));
 
-			if (mat[i].size() != n_modes)
+			if (mat[i].size() != (int)n_modes)
 				mat[i].resize(n_full);
 			mat[i][j] = btScalar(temp);
 		}

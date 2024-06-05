@@ -64,7 +64,7 @@ struct GL3TexLoader : public MyTextureLoader
 			pTexture->m_intData = *texIdPtr;
 		}
 	}
-	virtual void FreeTexture(Gwen::Texture* pTexture)
+	virtual void FreeTexture(Gwen::Texture* /*pTexture*/)
 	{
 	}
 };
@@ -504,7 +504,7 @@ void selectDemo(int demoIndex)
 
 #include <stdio.h>
 
-static void saveCurrentSettings(int currentEntry, const char* startFileName)
+static void saveCurrentSettings(int /*currentEntry*/, const char* startFileName)
 {
 	FILE* f = fopen(startFileName, "w");
 	if (f)
@@ -534,7 +534,7 @@ static void saveCurrentSettings(int currentEntry, const char* startFileName)
 
 		fclose(f);
 	}
-};
+}
 
 static void loadCurrentSettings(const char* startFileName, b3CommandLineArgs& args)
 {
@@ -554,7 +554,7 @@ static void loadCurrentSettings(const char* startFileName, b3CommandLineArgs& ar
 		}
 		fclose(f);
 	}
-};
+}
 
 void MyComboBoxCallback(int comboId, const char* item)
 {
@@ -648,7 +648,7 @@ struct MyMenuItemHander : public Gwen::Event::Handler
 			saveCurrentSettings(sCurrentDemoIndex, startFileName);
 		}
 	}
-	void onButtonC(Gwen::Controls::Base* pControl)
+	void onButtonC(Gwen::Controls::Base* /*pControl*/)
 	{
 		/*Gwen::Controls::Label* label = (Gwen::Controls::Label*) pControl;
 		Gwen::UnicodeString la = label->GetText();// node->GetButton()->GetName();// GetText();
@@ -659,7 +659,7 @@ struct MyMenuItemHander : public Gwen::Event::Handler
 		printf("onButtonC ! %s\n", ha);
 		*/
 	}
-	void onButtonD(Gwen::Controls::Base* pControl)
+	void onButtonD(Gwen::Controls::Base* /*pControl*/)
 	{
 		/*		Gwen::Controls::Label* label = (Gwen::Controls::Label*) pControl;
 		Gwen::UnicodeString la = label->GetText();// node->GetButton()->GetName();// GetText();
@@ -675,19 +675,19 @@ struct MyMenuItemHander : public Gwen::Event::Handler
 		}
 	}
 
-	void onButtonE(Gwen::Controls::Base* pControl)
+	void onButtonE(Gwen::Controls::Base* /*pControl*/)
 	{
 		//	printf("select %d\n",m_buttonId);
 		sCurrentHightlighted = m_buttonId;
 		gui2->setExampleDescription(gAllExamples->getExampleDescription(sCurrentHightlighted));
 	}
 
-	void onButtonF(Gwen::Controls::Base* pControl)
+	void onButtonF(Gwen::Controls::Base* /*pControl*/)
 	{
 		//printf("selection changed!\n");
 	}
 
-	void onButtonG(Gwen::Controls::Base* pControl)
+	void onButtonG(Gwen::Controls::Base* /*pControl*/)
 	{
 		//printf("onButtonG !\n");
 	}

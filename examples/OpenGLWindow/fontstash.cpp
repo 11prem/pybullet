@@ -33,8 +33,6 @@
 #define ADDITIONAL_HEIGHT 2
 
 #define STB_TRUETYPE_IMPLEMENTATION
-#define STBTT_malloc(x, u) malloc(x)
-#define STBTT_free(x, u) free(x)
 #include "stb_image/stb_truetype.h"
 
 #define HASH_LUT_SIZE 256
@@ -137,7 +135,7 @@ struct sth_stash* sth_create(int cachew, int cacheh, RenderCallbacks* renderCall
 		assert(0);
 		free(stash);
 	}
-	memset(texture, 0, sizeof(struct sth_texture));
+	memset((void*)texture, 0, sizeof(struct sth_texture));
 
 	// Create first texture for the cache.
 	stash->tw = cachew;
@@ -405,7 +403,7 @@ static struct sth_glyph* get_glyph(struct sth_stash* stash, struct sth_font* fnt
 						texture->next = (struct sth_texture*)malloc(sizeof(struct sth_texture));
 						texture = texture->next;
 						if (texture == NULL) goto error;
-						memset(texture, 0, sizeof(struct sth_texture));
+						memset((void*)texture, 0, sizeof(struct sth_texture));
 
 						stash->m_renderCallbacks->updateTexture(texture, 0, stash->tw, stash->th);
 					}
@@ -491,7 +489,7 @@ static int get_quad(struct sth_stash* stash, struct sth_font* fnt, struct sth_gl
 	return 1;
 }
 
-static int get_quad3D(struct sth_stash* stash, struct sth_font* fnt, struct sth_glyph* glyph, short isize2, float* x, float* y, struct sth_quad* q, float fontSize, float textScale)
+static int get_quad3D(struct sth_stash* stash, struct sth_font* fnt, struct sth_glyph* glyph, short /*isize2*/, float* x, float* y, struct sth_quad* q, float fontSize, float textScale)
 {
 	short isize = 1;
 	float rx, ry;
@@ -519,7 +517,7 @@ static int get_quad3D(struct sth_stash* stash, struct sth_font* fnt, struct sth_
 	return 1;
 }
 
-static Vertex* setv(Vertex* v, float x, float y, float s, float t, float width, float height, float colorRGBA[4])
+static Vertex* setv(Vertex* v, float x, float y, float s, float t, float width, float height, float /*colorRGBA*/[4])
 {
 	bool scale = true;
 	if (scale)
@@ -741,7 +739,7 @@ void sth_draw_text(struct sth_stash* stash,
 void sth_draw_text3D(struct sth_stash* stash,
 					 int idx, float fontSize,
 					 float x, float y, float z,
-					 const char* s, float* dx, float textScale, float colorRGBA[4], int unused)
+					 const char* s, float* dx, float textScale, float colorRGBA[4], int /*unused*/)
 {
 	unsigned int codepoint;
 	struct sth_glyph* glyph = NULL;

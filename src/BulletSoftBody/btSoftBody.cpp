@@ -142,7 +142,7 @@ btSoftBody::btSoftBody(btSoftBodyWorldInfo* worldInfo, int node_count, const btV
 
 	/* Nodes			*/
 	const btScalar margin = getCollisionShape()->getMargin();
-	m_nodes.resize(node_count);
+	// m_nodes.resize(node_count);
 	m_X.resize(node_count);
 	for (int i = 0, ni = node_count; i < ni; ++i)
 	{
@@ -524,6 +524,9 @@ void btSoftBody::appendAnchor(int node, btRigidBody* body, const btVector3& loca
 	a.m_local = localPivot;
 	a.m_node->m_battach = 1;
 	a.m_influence = influence;
+	a.m_c0.setZero();
+	a.m_c1 = btVector3(btScalar(0),btScalar(0),btScalar(0));
+	a.m_c2 = btScalar(0);
 	m_anchors.push_back(a);
 }
 
@@ -1716,7 +1719,7 @@ void btSoftBody::refine(ImplicitFn* ifn, btScalar accurary, bool cut)
 	const Node* nbase = &m_nodes[0];
 	int ncount = m_nodes.size();
 	btSymMatrix<int> edges(ncount, -2);
-	int newnodes = 0;
+	// int newnodes = 0;
 	int i, j, k, ni;
 
 	/* Filter out		*/
@@ -1792,7 +1795,7 @@ void btSoftBody::refine(ImplicitFn* ifn, btScalar accurary, bool cut)
 					appendNode(x, m);
 					edges(i, j) = m_nodes.size() - 1;
 					m_nodes[edges(i, j)].m_v = v;
-					++newnodes;
+					// ++newnodes;
 				}
 			}
 		}
@@ -2196,7 +2199,7 @@ void btSoftBody::predictMotion(btScalar dt)
 		}
 	}
 	/* Clear contacts        */
-	m_rcontacts.resize(0);
+	// m_rcontacts.resize(0);
 	m_scontacts.resize(0);
 	/* Optimize dbvt's        */
 	m_ndbvt.optimizeIncremental(1);
@@ -2381,7 +2384,7 @@ void btSoftBody::RayFromToCaster::Process(const btDbvtNode* leaf)
 
 //
 btScalar btSoftBody::RayFromToCaster::rayFromToTriangle(const btVector3& rayFrom,
-														const btVector3& rayTo,
+														const btVector3& /*rayTo*/,
 														const btVector3& rayNormalizedDirection,
 														const btVector3& a,
 														const btVector3& b,
@@ -2417,7 +2420,7 @@ void btSoftBody::pointersToIndices()
 {
 #define PTR2IDX(_p_, _b_) reinterpret_cast<btSoftBody::Node*>((_p_) - (_b_))
 	btSoftBody::Node* base = m_nodes.size() ? &m_nodes[0] : 0;
-	int i, ni;
+	size_t i, ni;
 
 	for (i = 0, ni = m_nodes.size(); i < ni; ++i)
 	{
@@ -3577,7 +3580,7 @@ void btSoftBody::advanceDeformation()
 	}
 }
 //
-void btSoftBody::Joint::Prepare(btScalar dt, int)
+void btSoftBody::Joint::Prepare(btScalar /*dt*/, int)
 {
 	m_bodies[0].activate();
 	m_bodies[1].activate();
@@ -3604,7 +3607,7 @@ void btSoftBody::LJoint::Prepare(btScalar dt, int iterations)
 }
 
 //
-void btSoftBody::LJoint::Solve(btScalar dt, btScalar sor)
+void btSoftBody::LJoint::Solve(btScalar /*dt*/, btScalar sor)
 {
 	const btVector3 va = m_bodies[0].velocity(m_rpos[0]);
 	const btVector3 vb = m_bodies[1].velocity(m_rpos[1]);
@@ -3617,7 +3620,7 @@ void btSoftBody::LJoint::Solve(btScalar dt, btScalar sor)
 }
 
 //
-void btSoftBody::LJoint::Terminate(btScalar dt)
+void btSoftBody::LJoint::Terminate(btScalar /*dt*/)
 {
 	if (m_split > 0)
 	{
@@ -3647,7 +3650,7 @@ void btSoftBody::AJoint::Prepare(btScalar dt, int iterations)
 }
 
 //
-void btSoftBody::AJoint::Solve(btScalar dt, btScalar sor)
+void btSoftBody::AJoint::Solve(btScalar /*dt*/, btScalar sor)
 {
 	const btVector3 va = m_bodies[0].angularVelocity();
 	const btVector3 vb = m_bodies[1].angularVelocity();
@@ -3662,7 +3665,7 @@ void btSoftBody::AJoint::Solve(btScalar dt, btScalar sor)
 }
 
 //
-void btSoftBody::AJoint::Terminate(btScalar dt)
+void btSoftBody::AJoint::Terminate(btScalar /*dt*/)
 {
 	if (m_split > 0)
 	{
@@ -3694,7 +3697,7 @@ void btSoftBody::CJoint::Prepare(btScalar dt, int iterations)
 }
 
 //
-void btSoftBody::CJoint::Solve(btScalar dt, btScalar sor)
+void btSoftBody::CJoint::Solve(btScalar /*dt*/, btScalar sor)
 {
 	const btVector3 va = m_bodies[0].velocity(m_rpos[0]);
 	const btVector3 vb = m_bodies[1].velocity(m_rpos[1]);
@@ -3737,7 +3740,7 @@ void btSoftBody::CJoint::Solve(btScalar dt, btScalar sor)
 }
 
 //
-void btSoftBody::CJoint::Terminate(btScalar dt)
+void btSoftBody::CJoint::Terminate(btScalar /*dt*/)
 {
 	if (m_split > 0)
 	{
@@ -3870,7 +3873,7 @@ void btSoftBody::setCollisionQuadrature(int N)
 }
 
 //
-void btSoftBody::PSolve_Anchors(btSoftBody* psb, btScalar kst, btScalar ti)
+void btSoftBody::PSolve_Anchors(btSoftBody* psb, btScalar kst, btScalar /*ti*/)
 {
 	BT_PROFILE("PSolve_Anchors");
 	const btScalar kAHR = psb->m_cfg.kAHR * kst;
@@ -3891,7 +3894,7 @@ void btSoftBody::PSolve_Anchors(btSoftBody* psb, btScalar kst, btScalar ti)
 }
 
 //
-void btSoftBody::PSolve_RContacts(btSoftBody* psb, btScalar kst, btScalar ti)
+void btSoftBody::PSolve_RContacts(btSoftBody* psb, btScalar kst, btScalar /*ti*/)
 {
 	BT_PROFILE("PSolve_RContacts");
 	const btScalar dt = psb->m_sst.sdt;
@@ -3966,7 +3969,7 @@ void btSoftBody::PSolve_RContacts(btSoftBody* psb, btScalar kst, btScalar ti)
 }
 
 //
-void btSoftBody::PSolve_SContacts(btSoftBody* psb, btScalar, btScalar ti)
+void btSoftBody::PSolve_SContacts(btSoftBody* psb, btScalar, btScalar /*ti*/)
 {
 	BT_PROFILE("PSolve_SContacts");
 
@@ -4001,7 +4004,7 @@ void btSoftBody::PSolve_SContacts(btSoftBody* psb, btScalar, btScalar ti)
 }
 
 //
-void btSoftBody::PSolve_Links(btSoftBody* psb, btScalar kst, btScalar ti)
+void btSoftBody::PSolve_Links(btSoftBody* psb, btScalar kst, btScalar /*ti*/)
 {
 	BT_PROFILE("PSolve_Links");
 	for (int i = 0, ni = psb->m_links.size(); i < ni; ++i)

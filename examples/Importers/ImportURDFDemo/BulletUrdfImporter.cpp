@@ -193,7 +193,7 @@ bool BulletURDFImporter::loadURDF(const char* fileName, bool forceFixedBase)
 
 	if (xml_string.length())
 	{
-			result = m_data->m_urdfParser.loadUrdf(xml_string.c_str(), &loggie, forceFixedBase, (m_data->m_flags & CUF_PARSE_SENSORS));
+			result = m_data->m_urdfParser.loadUrdf(xml_string.c_str(), &loggie, forceFixedBase, (m_data->m_flags & CUF_PARSE_SENSORS) != 0);
 
 			if (m_data->m_flags & CUF_IGNORE_VISUAL_SHAPES)
 			{
@@ -240,7 +240,7 @@ void BulletURDFImporter::activateModel(int modelIndex)
 	m_data->m_urdfParser.activateModel(modelIndex);
 }
 
-bool BulletURDFImporter::loadSDF(const char* fileName, bool forceFixedBase)
+bool BulletURDFImporter::loadSDF(const char* fileName, bool /*forceFixedBase*/)
 {
 	//int argc=0;
 	char relativeFileName[1024];
@@ -320,7 +320,7 @@ int BulletURDFImporter::getRootLinkIndex() const
 		return m_data->m_urdfParser.getModel().m_rootLinks[0]->m_linkIndex;
 	}
 	return -1;
-};
+}
 
 void BulletURDFImporter::getLinkChildIndices(int linkIndex, btAlignedObjectArray<int>& childLinkIndices) const
 {
@@ -527,7 +527,7 @@ bool BulletURDFImporter::getJointInfo3(int urdfLinkIndex, btTransform& parent2jo
 	}
 
 	return false;
-};
+}
 
 bool BulletURDFImporter::getJointInfo(int urdfLinkIndex, btTransform& parent2joint, btTransform& linkTransformInWorld, btVector3& jointAxisInJointSpace, int& jointType, btScalar& jointLowerLimit, btScalar& jointUpperLimit, btScalar& jointDamping, btScalar& jointFriction) const
 {
@@ -1535,7 +1535,7 @@ class btCompoundShape* BulletURDFImporter::convertLinkCollisionShapes(int linkIn
 
 const struct UrdfModel* BulletURDFImporter::getUrdfModel() const {
 	return &m_data->m_urdfParser.getModel();
-};
+}
 
 const struct UrdfDeformable& BulletURDFImporter::getDeformableModel() const
 {

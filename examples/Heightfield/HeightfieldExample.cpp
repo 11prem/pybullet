@@ -44,8 +44,8 @@ static const btScalar s_deltaPhase = 0.25 * 2.0 * SIMD_PI;
 enum eTerrainModel {
 	eRadial = 0,	// deterministic
 	eFractal = 1,	// random
-	eCSVFile = 2,//csv file used in DeepLoco for example
-	eImageFile = 3,//terrain from png/jpg files, asset from https://www.beamng.com/threads/tutorial-adding-heightmap-roads-using-blender.16356/
+	eCSVFile = 2, //csv file used in DeepLoco for example
+	eImageFile = 3 //terrain from png/jpg files, asset from https://www.beamng.com/threads/tutorial-adding-heightmap-roads-using-blender.16356/
 
 };
 
@@ -439,6 +439,7 @@ getRawHeightfieldData
         b3BulletDefaultFileIO fileIO;
         char relativeFileName[1024];
         int found = fileIO.findFile("heightmaps/wm_height_out.png", relativeFileName, 1024);
+				(void)found;
         
 
         b3AlignedObjectArray<char> buffer;
@@ -491,8 +492,8 @@ getRawHeightfieldData
                     
 					for (int i = 0; i < width; ++i)
                     {
-						float x = i * s_gridSpacing;
-                        float y = j * s_gridSpacing;
+						// float x = i * s_gridSpacing;
+						// float y = j * s_gridSpacing;
 						float heightScaling = (14. / 256.);
 						float z = double(image[(width - 1 - i) * 3 + width*j * 3]) * heightScaling;
                         convertFromFloat(p, z, type);
@@ -540,7 +541,7 @@ getRawHeightfieldData
             if (slot>=0)
             {
                 char* lineChar;
-                while (lineChar = fileIO.readLine(slot, lineBuffer, MYLINELENGTH))
+                while ((lineChar = fileIO.readLine(slot, lineBuffer, MYLINELENGTH)))
                 {
                     rows=0;
                     char** values = urdfStrSplit(lineChar, ",");
@@ -548,7 +549,7 @@ getRawHeightfieldData
                     {
                         int index = 0;
                         char* value;
-                        while (value = values[index++])
+                        while ((value = values[index++]))
                         {
                             std::string strval(value);
                             double v;
@@ -585,10 +586,10 @@ getRawHeightfieldData
                 byte_t * p = raw;
                 for (int i = 0; i < width; ++i)
                 {
-                    float x = i * s_gridSpacing;
+                    // float x = i * s_gridSpacing;
                     for (int j = 0; j < width; ++j)
                     {
-                        float y = j * s_gridSpacing;
+                        // float y = j * s_gridSpacing;
                         float z = allValues[i+width*j];
                         convertFromFloat(p, z, type);
 						// update min/max
@@ -754,7 +755,7 @@ private:
 #define HEIGHTFIELD_TYPE_COUNT 4
 eTerrainModel gHeightfieldType = eRadial;
 
-void setHeightfieldTypeComboBoxCallback(int combobox, const char* item, void* userPointer)
+void setHeightfieldTypeComboBoxCallback(int /*combobox*/, const char* item, void* userPointer)
 {
 	const char** items = static_cast<const char**>(userPointer);
 	for (int i = 0; i < HEIGHTFIELD_TYPE_COUNT; ++i)
@@ -819,7 +820,7 @@ public:
 		m_pIndicesOut = 0;
 	}
 
-	virtual void processTriangle(btVector3* tris, int partId, int triangleIndex)
+	virtual void processTriangle(btVector3* tris, int /*partId*/, int /*triangleIndex*/)
 	{
 		for (int k = 0; k < 3; k++)
 		{
@@ -1088,7 +1089,7 @@ void HeightfieldExample::stepSimulation(float deltaTime)
 	{
 		btAlignedObjectArray<GLInstanceVertex> gfxVertices;
 		btAlignedObjectArray<int> indices;
-		int strideInBytes = 9 * sizeof(float);
+		// int strideInBytes = 9 * sizeof(float);
 
 		m_phase += s_deltaPhase * deltaTime;
 		if (m_phase > 2.0 * SIMD_PI) {
@@ -1197,6 +1198,7 @@ void HeightfieldExample::resetPhysics(void)
 		b3BulletDefaultFileIO fileIO;
 		char relativeFileName[1024];
 		int found = fileIO.findFile("heightmaps/gimp_overlay_out.png", relativeFileName, 1024);
+		(void)found;
 
 		b3AlignedObjectArray<char> buffer;
 		buffer.reserve(1024);

@@ -128,7 +128,7 @@ void btBvhTriangleMeshShape::performRaycast(btTriangleCallback* callback, const 
 			const btVector3& meshScaling = m_meshInterface->getScaling();
 			for (int j = 2; j >= 0; j--)
 			{
-				int graphicsindex;
+				int graphicsindex=0;
                                 switch (indicestype) {
                                         case PHY_INTEGER: graphicsindex = gfxbase[j]; break;
                                         case PHY_SHORT: graphicsindex = ((unsigned short*)gfxbase)[j]; break;
@@ -202,7 +202,7 @@ void btBvhTriangleMeshShape::performConvexcast(btTriangleCallback* callback, con
 			const btVector3& meshScaling = m_meshInterface->getScaling();
 			for (int j = 2; j >= 0; j--)
 			{
-				int graphicsindex;
+				int graphicsindex=0;
                                 switch (indicestype) {
                                         case PHY_INTEGER: graphicsindex = gfxbase[j]; break;
                                         case PHY_SHORT: graphicsindex = ((unsigned short*)gfxbase)[j]; break;
@@ -401,9 +401,9 @@ const char* btBvhTriangleMeshShape::serialize(void* dataBuffer, btSerializer* se
 #endif  //BT_USE_DOUBLE_PRECISION
 
 			int sz = m_bvh->calculateSerializeBufferSizeNew();
-			btChunk* chunk = serializer->allocate(sz, 1);
-			const char* structType = m_bvh->serialize(chunk->m_oldPtr, serializer);
-			serializer->finalizeChunk(chunk, structType, BT_QUANTIZED_BVH_CODE, m_bvh);
+			btChunk* serializerChunk = serializer->allocate(sz, 1);
+			const char* structType = m_bvh->serialize(serializerChunk->m_oldPtr, serializer);
+			serializer->finalizeChunk(serializerChunk, structType, BT_QUANTIZED_BVH_CODE, m_bvh);
 		}
 	}
 	else
@@ -423,9 +423,9 @@ const char* btBvhTriangleMeshShape::serialize(void* dataBuffer, btSerializer* se
 		{
 			trimeshData->m_triangleInfoMap = (btTriangleInfoMapData*)serializer->getUniquePointer(m_triangleInfoMap);
 			int sz = m_triangleInfoMap->calculateSerializeBufferSize();
-			btChunk* chunk = serializer->allocate(sz, 1);
-			const char* structType = m_triangleInfoMap->serialize(chunk->m_oldPtr, serializer);
-			serializer->finalizeChunk(chunk, structType, BT_TRIANLGE_INFO_MAP, m_triangleInfoMap);
+			btChunk* serializerChunk = serializer->allocate(sz, 1);
+			const char* structType = m_triangleInfoMap->serialize(serializerChunk->m_oldPtr, serializer);
+			serializer->finalizeChunk(serializerChunk, structType, BT_TRIANLGE_INFO_MAP, m_triangleInfoMap);
 		}
 	}
 	else

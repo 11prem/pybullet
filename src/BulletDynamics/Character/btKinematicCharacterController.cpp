@@ -159,6 +159,9 @@ btKinematicCharacterController::btKinematicCharacterController(btPairCachingGhos
 	bounce_fix = false;
 	m_linearDamping = btScalar(0.0);
 	m_angularDamping = btScalar(0.0);
+	m_halfHeight = 0.0;
+	m_maxJumpHeight = 0.0;
+	m_touchingContact = false;
 
 	setUp(up);
 	setStepHeight(stepHeight);
@@ -697,7 +700,7 @@ void btKinematicCharacterController::warp(const btVector3& origin)
 	m_ghostObject->setWorldTransform(xform);
 }
 
-void btKinematicCharacterController::preStep(btCollisionWorld* collisionWorld)
+void btKinematicCharacterController::preStep(btCollisionWorld* /*collisionWorld*/)
 {
 	m_currentPosition = m_ghostObject->getWorldTransform().getOrigin();
 	m_targetPosition = m_currentPosition;
@@ -941,7 +944,7 @@ btVector3* btKinematicCharacterController::getUpAxisDirections()
 	return sUpAxisDirection;
 }
 
-void btKinematicCharacterController::debugDraw(btIDebugDraw* debugDrawer)
+void btKinematicCharacterController::debugDraw(btIDebugDraw* /*debugDrawer*/)
 {
 }
 

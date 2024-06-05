@@ -13,7 +13,9 @@
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include <algorithm>
 #include <fstream>
@@ -212,7 +214,7 @@ IVHACD* CreateVHACD(void)
 {
 	return new VHACD();
 }
-bool VHACD::OCLInit(void* const oclDevice, IUserLogger* const logger)
+bool VHACD::OCLInit(void* const /*oclDevice*/, IUserLogger* const /*logger*/)
 {
 #ifdef CL_VERSION_1_1
 	m_oclDevice = (cl_device_id*)oclDevice;
@@ -353,7 +355,7 @@ bool VHACD::OCLInit(void* const oclDevice, IUserLogger* const logger)
 	return false;
 #endif  //CL_VERSION_1_1
 }
-bool VHACD::OCLRelease(IUserLogger* const logger)
+bool VHACD::OCLRelease(IUserLogger* const /*logger*/)
 {
 #ifdef CL_VERSION_1_1
 	cl_int error;
@@ -743,7 +745,7 @@ inline double ComputeConcavity(const double volume, const double volumeCH, const
 }
 
 //#define DEBUG_TEMP
-void VHACD::ComputeBestClippingPlane(const PrimitiveSet* inputPSet, const double volume, const SArray<Plane>& planes,
+void VHACD::ComputeBestClippingPlane(const PrimitiveSet* inputPSet, const double /*volume*/, const SArray<Plane>& planes,
 									 const Vec3<double>& preferredCuttingDirection, const double w, const double alpha, const double beta,
 									 const int convexhullDownsampling, const double progress0, const double progress1, Plane& bestPlane,
 									 double& minConcavity, const Parameters& params)
@@ -1460,8 +1462,6 @@ void VHACD::MergeConvexHulls(const Parameters& params)
 			const size_t addrI = (static_cast<int>(sqrt(nr)) - 1) >> 1;
 			const size_t p1 = addrI + 1;
 			const size_t p2 = addr - ((addrI * (addrI + 1)) >> 1);
-			assert(p1 >= 0);
-			assert(p2 >= 0);
 			assert(p1 < costSize);
 			assert(p2 < costSize);
 
@@ -1500,7 +1500,6 @@ void VHACD::MergeConvexHulls(const Parameters& params)
 				ComputeConvexHull(m_convexHulls[p2], m_convexHulls[i], pts, &combinedCH);
 				costMatrix[rowIdx] = ComputeConcavity(volume1 + m_convexHulls[i]->ComputeVolume(), combinedCH.ComputeVolume(), m_volumeCH0);
 				rowIdx += i;
-				assert(rowIdx >= 0);
 			}
 
 			// Move the top column in to replace its space
@@ -1525,7 +1524,6 @@ void VHACD::MergeConvexHulls(const Parameters& params)
 				{
 					costMatrix[rowIdx] = costMatrix[top_row++];
 					rowIdx += i;
-					assert(rowIdx >= 0);
 				}
 			}
 			costMatrix.Resize(erase_idx);

@@ -190,7 +190,7 @@ void HACD::InitializeDualGraph()
 		m_facePoints = new Vec3<Real>[m_nTriangles];
 		m_faceNormals = new Vec3<Real>[m_nTriangles];
 	}
-	memset(m_normals, 0, sizeof(Vec3<Real>) * m_nPoints);
+	memset((void*)m_normals, 0, sizeof(Vec3<Real>) * m_nPoints);
 	for (unsigned long f = 0; f < m_nTriangles; f++)
 	{
 		if (m_callBack) (*m_callBack)("+ InitializeDualGraph\n", f, m_nTriangles, 0);
@@ -654,7 +654,7 @@ void HACD::Simplify()
 			if (m_callBack)
 			{
 				char msg[1024];
-				sprintf(msg, "\t CH \t %lu \t %lf \t %lf\n", static_cast<unsigned long>(p), m_graph.m_vertices[v].m_concavity, m_graph.m_vertices[v].m_error);
+				sprintf(msg, "\t CH \t %lu \t %f \t %f\n", static_cast<unsigned long>(p), m_graph.m_vertices[v].m_concavity, m_graph.m_vertices[v].m_error);
 				(*m_callBack)(msg, 0.0, 0.0, m_nClusters);
 				p++;
 			}

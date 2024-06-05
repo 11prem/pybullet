@@ -38,8 +38,8 @@ static int maxShapeCapacityInBytes = 128 * 1024 * 1024;
 #include <cstdlib>
 
 #include <openvr.h>
-#include "strtools.h"
 #include "compat.h"
+#include "strtools.h"
 #include "lodepng.h"
 #include "Matrices.h"
 #include "pathtools.h"
@@ -49,13 +49,13 @@ CommonExampleInterface *sExample;
 int sPrevPacketNum = 0;
 OpenGLGuiHelper *sGuiPtr = 0;
 
-static vr::VRControllerState_t sPrevStates[vr::k_unMaxTrackedDeviceCount] = {0};
+static vr::VRControllerState_t sPrevStates[vr::k_unMaxTrackedDeviceCount] = {};
 
 #if defined(POSIX)
 #include "unistd.h"
 #endif
 #ifdef _WIN32
-#include <Windows.h>
+#include <windows.h>
 #endif
 #ifdef __linux__
 #define APIENTRY
@@ -258,8 +258,11 @@ private:  // OpenGL bookkeeping
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
 CMainApplication::CMainApplication(int argc, char *argv[])
-	: m_app(NULL), m_hasContext(false), m_nWindowWidth(1280), m_nWindowHeight(720), m_unSceneProgramID(0), m_unLensProgramID(0), m_unControllerTransformProgramID(0), m_unRenderModelProgramID(0), m_pHMD(NULL), m_pRenderModels(NULL), m_bDebugOpenGL(false), m_bVerbose(false), m_bPerf(false), m_bVblank(false), m_bGlFinishHack(true), m_glControllerVertBuffer(0), m_unControllerVAO(0), m_unLensVAO(0), m_unSceneVAO(0), m_nSceneMatrixLocation(-1), m_nControllerMatrixLocation(-1), m_nRenderModelMatrixLocation(-1), m_iTrackedControllerCount(0), m_iTrackedControllerCount_Last(-1), m_iValidPoseCount(0), m_iValidPoseCount_Last(-1), m_iSceneVolumeInit(20), m_strPoseClasses(""), m_bShowCubes(false)
+	: m_bDebugOpenGL(false), m_bVerbose(false), m_bPerf(false), m_bVblank(false), m_bGlFinishHack(true), m_pHMD(NULL), m_pRenderModels(NULL), m_app(NULL), m_nWindowWidth(1280), m_nWindowHeight(720), m_hasContext(false), 
+	m_iTrackedControllerCount(0), m_iTrackedControllerCount_Last(-1), m_iValidPoseCount(0), m_iValidPoseCount_Last(-1), m_bShowCubes(false),m_strPoseClasses(""), m_iSceneVolumeInit(20), m_unSceneVAO(0), m_unLensVAO(0), m_glControllerVertBuffer(0), m_unControllerVAO(0), m_unSceneProgramID(0), m_unLensProgramID(0), m_unControllerTransformProgramID(0), m_unRenderModelProgramID(0), m_nSceneMatrixLocation(-1), m_nControllerMatrixLocation(-1), m_nRenderModelMatrixLocation(-1)
 {
+	(void)m_bPerf;
+
 	for (int i = 1; i < argc; i++)
 	{
 		if (!stricmp(argv[i], "-gldebug"))
@@ -290,7 +293,7 @@ CMainApplication::CMainApplication(int argc, char *argv[])
 	}
 	// other initialization tasks are done in BInit
 	memset(m_rDevClassChar, 0, sizeof(m_rDevClassChar));
-};
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Destructor
@@ -559,7 +562,7 @@ bool CMainApplication::BInitGL()
 	{
 		//const GLvoid *userParam=0;
 		//glDebugMessageCallback(DebugCallback,  userParam);
-		//glDebugMessageControl( GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE );
+		//glDebugMessageControl( GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE );
 		//glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	}
 
@@ -582,7 +585,7 @@ bool CMainApplication::BInitGL()
 //-----------------------------------------------------------------------------
 bool CMainApplication::BInitCompositor()
 {
-	vr::EVRInitError peError = vr::VRInitError_None;
+	// vr::EVRInitError peError = vr::VRInitError_None;
 
 	if (!vr::VRCompositor())
 	{
@@ -614,8 +617,8 @@ void CMainApplication::Shutdown()
 	{
 		if (m_glSceneVertBuffer)
 		{
-			//glDebugMessageControl( GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_FALSE );
-			//glDebugMessageCallback(nullptr, nullptr);
+			//glDebugMessageControl( GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE );
+			//glDebugMessageCallback(NULL, NULL);
 			glDeleteBuffers(1, &m_glSceneVertBuffer);
 			glDeleteBuffers(1, &m_glIDVertBuffer);
 			glDeleteBuffers(1, &m_glIDIndexBuffer);
@@ -722,7 +725,7 @@ bool CMainApplication::HandleInput()
 			//if (sPrevStates[unDevice].unPacketNum != state.unPacketNum)
 			if (m_pHMD->GetTrackedDeviceClass(unDevice) == vr::TrackedDeviceClass_HMD)
 			{
-				Matrix4 rotYtoZ = rotYtoZ.identity();
+				Matrix4 rotYtoZ = Matrix4();
 				//some Bullet apps (especially robotics related) require Z as up-axis)
 				if (m_app->getUpAxis() == 2)
 				{
@@ -1495,7 +1498,7 @@ bool CMainApplication::CreateFrameBuffer(int nWidth, int nHeight, FramebufferDes
 	glBindTexture(GL_TEXTURE_2D, framebufferDesc.m_nResolveTextureId);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferDesc.m_nResolveTextureId, 0);
 
 	// check FBO status
@@ -1680,7 +1683,7 @@ void CMainApplication::RenderStereoTargets()
 
 	m_app->m_instancingRenderer->init();
 
-	Matrix4 rotYtoZ = rotYtoZ.identity();
+	Matrix4 rotYtoZ = Matrix4();
 
 	//some Bullet apps (especially robotics related) require Z as up-axis)
 	if (m_app->getUpAxis() == 2)
@@ -1968,7 +1971,7 @@ void CMainApplication::UpdateHMDMatrixPose()
 	{
 		B3_PROFILE("for loop");
 
-		for (int nDevice = 0; nDevice < vr::k_unMaxTrackedDeviceCount; ++nDevice)
+		for (unsigned int nDevice = 0; nDevice < vr::k_unMaxTrackedDeviceCount; ++nDevice)
 		{
 			if (m_rTrackedDevicePose[nDevice].bPoseIsValid)
 			{

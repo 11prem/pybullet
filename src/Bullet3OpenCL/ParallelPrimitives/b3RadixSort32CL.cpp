@@ -123,7 +123,7 @@ void b3RadixSort32CL::executeHost(b3AlignedObjectArray<b3SortData>& inout, int s
 				printf("tables[%d]=%d]\n", i, tables[i]);
 			}
 		}
-#endif  //TEST \
+#endif  //TEST
 	//	prefix scan
 		int sum = 0;
 		for (int i = 0; i < NUM_TABLES; i++)
@@ -163,8 +163,8 @@ void b3RadixSort32CL::executeHost(b3OpenCLArray<b3SortData>& keyValuesInOut, int
 	keyValuesInOut.copyFromHost(inout);
 }
 
-void b3RadixSort32CL::execute(b3OpenCLArray<unsigned int>& keysIn, b3OpenCLArray<unsigned int>& keysOut, b3OpenCLArray<unsigned int>& valuesIn,
-							  b3OpenCLArray<unsigned int>& valuesOut, int n, int sortBits)
+void b3RadixSort32CL::execute(b3OpenCLArray<unsigned int>& /*keysIn*/, b3OpenCLArray<unsigned int>& /*keysOut*/, b3OpenCLArray<unsigned int>& /*valuesIn*/,
+							  b3OpenCLArray<unsigned int>& /*valuesOut*/, int /*n*/, int /*sortBits*/)
 {
 }
 

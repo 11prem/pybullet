@@ -37,7 +37,7 @@ template <class T>
 T b3NextPowerOf2(T n)
 {
 	n -= 1;
-	for (int i = 0; i < sizeof(T) * 8; i++)
+	for (unsigned int i = 0; i < sizeof(T) * 8; i++)
 		n = n | (n >> i);
 	return n + 1;
 }
@@ -45,7 +45,7 @@ T b3NextPowerOf2(T n)
 void b3PrefixScanFloat4CL::execute(b3OpenCLArray<b3Vector3>& src, b3OpenCLArray<b3Vector3>& dst, int n, b3Vector3* sum)
 {
 	//	b3Assert( data->m_option == EXCLUSIVE );
-	const unsigned int numBlocks = (const unsigned int)((n + BLOCK_SIZE * 2 - 1) / (BLOCK_SIZE * 2));
+	const unsigned int numBlocks = (unsigned int)((n + BLOCK_SIZE * 2 - 1) / (BLOCK_SIZE * 2));
 
 	dst.resize(src.size());
 	m_workBuffer->resize(src.size());

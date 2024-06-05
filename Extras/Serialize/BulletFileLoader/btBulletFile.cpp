@@ -117,7 +117,7 @@ void btBulletFile::parseData()
 	remain -= 12;
 
 	//invalid/empty file?
-	if (remain < sizeof(bChunkInd))
+	if (remain < (int)sizeof(bChunkInd))
 		return;
 
 	char* dataPtr = mFileBuffer + mDataStart;
@@ -419,6 +419,7 @@ void btBulletFile::addStruct(const char* structType, void* data, int len, void* 
 	elemBytes = mMemoryDNA->getLength(structInfo[0]);
 	//	int elemBytes = mMemoryDNA->getElementSize(structInfo[0],structInfo[1]);
 	assert(len == elemBytes);
+	(void)elemBytes;
 
 	mLibPointers.insert(dataChunk.oldPtr, (bStructHandle*)data);
 	m_chunks.push_back(dataChunk);

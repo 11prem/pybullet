@@ -31,10 +31,11 @@ public:
 	FixJointBoxes(GUIHelperInterface* helper, int options)
 		: m_guiHelper(helper),
 		  m_options(options),
-		  numCubes(30),
-		  cubeIds(numCubes, 0),
-		  solver(solverId)
+		  solver(solverId),
+			numCubes(30),
+			cubeIds(numCubes, 0)
 	{
+		(void)m_options;
 	}
 
 	virtual ~FixJointBoxes()
@@ -61,7 +62,7 @@ public:
 			b3RobotSimulatorLoadUrdfFileArgs args;
 			b3RobotSimulatorChangeDynamicsArgs dynamicsArgs;
 
-			for (int i = 0; i < numCubes; i++)
+			for (unsigned int i = 0; i < numCubes; i++)
 			{
 				args.m_forceOverrideFixedBase = (i == 0);
 				args.m_startPosition.setValue(0, i * 0.05, 1);
@@ -109,14 +110,14 @@ public:
 
 	void resetCubePosition()
 	{
-		for (int i = 0; i < numCubes; i++)
+		for (unsigned int i = 0; i < numCubes; i++)
 		{
 			btVector3 pos(0, i * (btScalar)0.05, 1);
 			btQuaternion quar(0, 0, 0, 1);
 			m_robotSim.resetBasePositionAndOrientation(cubeIds[i], pos, quar);
 		}
 	}
-	virtual void stepSimulation(float deltaTime)
+	virtual void stepSimulation(float /*deltaTime*/)
 	{
 		int newSolver = (int)(solverId + 0.5);
 		if (newSolver != solver)
@@ -151,7 +152,7 @@ public:
 	{
 		return m_robotSim.mouseButtonCallback(button, state, x, y);
 	}
-	virtual bool keyboardCallback(int key, int state)
+	virtual bool keyboardCallback(int /*key*/, int /*state*/)
 	{
 		return false;
 	}

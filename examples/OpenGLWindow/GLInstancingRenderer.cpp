@@ -162,9 +162,9 @@ struct b3GraphicsInstance
 	int m_flags;  //transparency etc
 
 	b3GraphicsInstance()
-		: m_cube_vao(-1),
-		  m_index_vbo(-1),
-		  m_textureIndex(-1),
+		: m_cube_vao((GLuint)-1),
+		  m_index_vbo((GLuint)-1),
+		  m_textureIndex((GLuint)-1),
 		  m_numIndices(-1),
 		  m_numVertices(-1),
 		  m_numGraphicsInstances(0),
@@ -283,8 +283,8 @@ struct GLInstanceRendererInternalData* GLInstancingRenderer::getInternalData()
 
 static GLuint triangleShaderProgram;
 static GLint triangle_mvp_location = -1;
-static GLint triangle_vpos_location = -1;
-static GLint triangle_vUV_location = -1;
+// static GLint triangle_vpos_location = -1;
+// static GLint triangle_vUV_location = -1;
 static GLint triangle_vcol_location = -1;
 static GLuint triangleVertexBufferObject = 0;
 static GLuint triangleVertexArrayObject = 0;
@@ -527,7 +527,7 @@ void GLInstancingRenderer::writeSingleInstanceFlagsToCPU(int flags, int srcIndex
 {
 	b3PublicGraphicsInstance* pg = m_data->m_publicGraphicsInstances.getHandle(srcIndex2);
 	b3Assert(pg);
-	int srcIndex = pg->m_internalInstanceIndex;
+	// int srcIndex = pg->m_internalInstanceIndex;
 
 	int shapeIndex = pg->m_shapeIndex;
 	b3GraphicsInstance* gfxObj = m_graphicsInstances[shapeIndex];
@@ -609,7 +609,7 @@ void GLInstancingRenderer::writeSingleInstanceSpecularColorToCPU(const double* s
 {
 	b3PublicGraphicsInstance* pg = m_data->m_publicGraphicsInstances.getHandle(srcIndex2);
 	b3Assert(pg);
-	int graphicsIndex = pg->m_internalInstanceIndex;
+	// int graphicsIndex = pg->m_internalInstanceIndex;
 
 	int totalNumInstances = 0;
 
@@ -635,7 +635,7 @@ void GLInstancingRenderer::writeSingleInstanceSpecularColorToCPU(const float* sp
 {
 	b3PublicGraphicsInstance* pg = m_data->m_publicGraphicsInstances.getHandle(srcIndex2);
 	b3Assert(pg);
-	int srcIndex = pg->m_internalInstanceIndex;
+	// int srcIndex = pg->m_internalInstanceIndex;
 
 	int totalNumInstances = 0;
 
@@ -1070,11 +1070,11 @@ void GLInstancingRenderer::replaceTexture(int shapeIndex, int textureId)
 		b3GraphicsInstance* gfxObj = m_graphicsInstances[shapeIndex];
 		if (textureId >= 0 && textureId < m_data->m_textureHandles.size())
 		{
-			gfxObj->m_textureIndex = textureId;
+			gfxObj->m_textureIndex = (GLuint)textureId;
 			gfxObj->m_flags |= B3_INSTANCE_TEXTURE;
 		} else
 		{
-			gfxObj->m_textureIndex = -1;
+			gfxObj->m_textureIndex = (GLuint)-1;
 			gfxObj->m_flags &= ~B3_INSTANCE_TEXTURE;
 		}
 	}
@@ -1854,9 +1854,9 @@ static void b3CreateLookAt(const b3Vector3& eye, const b3Vector3& center, const 
 }
 
 
-void GLInstancingRenderer::drawTexturedTriangleMesh(float worldPosition[3], float worldOrientation[4], const float* vertices, int numvertices, const unsigned int* indices, int numIndices, float colorRGBA[4], int textureIndex, int vertexLayout)
+void GLInstancingRenderer::drawTexturedTriangleMesh(float worldPosition[3], float worldOrientation[4], const float* vertices, int numvertices, const unsigned int* indices, int numIndices, float colorRGBA[4], int textureIndex, int /*vertexLayout*/)
 {
-	int sz = sizeof(GfxVertexFormat0);
+	// int sz = sizeof(GfxVertexFormat0);
 
 	glActiveTexture(GL_TEXTURE0);
 	activateTexture(textureIndex);
@@ -1910,7 +1910,7 @@ void GLInstancingRenderer::drawTexturedTriangleMesh(float worldPosition[3], floa
 	checkError("glVertexAttribDivisor");
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triangleIndexVbo);
-	int indexBufferSizeInBytes = numIndices * sizeof(int);
+	// int indexBufferSizeInBytes = numIndices * sizeof(int);
 
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(int), NULL, GL_DYNAMIC_DRAW);
 	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, numIndices * sizeof(int), indices);
@@ -2217,8 +2217,8 @@ void GLInstancingRenderer::renderSceneInternal(int orgRenderMode)
 
 #ifdef OLD_SHADOWMAP_INIT
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, shadowMapWidth, shadowMapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
-#else   //OLD_SHADOWMAP_INIT                                                              \
-		//Reduce size of shadowMap if glTexImage2D call fails as may happen in some cases \
+#else   //OLD_SHADOWMAP_INIT                                                              
+		//Reduce size of shadowMap if glTexImage2D call fails as may happen in some cases
 		//https://github.com/bulletphysics/bullet3/issues/40
 
 			int size;

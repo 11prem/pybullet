@@ -73,9 +73,9 @@ b3BoundSearchCL::~b3BoundSearchCL()
 
 void b3BoundSearchCL::execute(b3OpenCLArray<b3SortData>& src, int nSrc, b3OpenCLArray<unsigned int>& dst, int nDst, Option option)
 {
-	b3Int4 constBuffer;
-	constBuffer.x = nSrc;
-	constBuffer.y = nDst;
+	// b3Int4 constBuffer;
+	// constBuffer.x = nSrc;
+	// constBuffer.y = nDst;
 
 	if (option == BOUND_LOWER)
 	{
@@ -103,8 +103,8 @@ void b3BoundSearchCL::execute(b3OpenCLArray<b3SortData>& src, int nSrc, b3OpenCL
 	{
 		b3Assert(m_lower);
 		b3Assert(m_upper);
-		b3Assert(m_lower->capacity() <= (int)nDst);
-		b3Assert(m_upper->capacity() <= (int)nDst);
+		b3Assert((int)m_lower->capacity() <= nDst);
+		b3Assert((int)m_upper->capacity() <= nDst);
 
 		int zero = 0;
 		m_filler->execute(*m_lower, zero, nDst);
@@ -136,11 +136,11 @@ void b3BoundSearchCL::executeHost(b3AlignedObjectArray<b3SortData>& src, int nSr
 	for (int i = 0; i < nSrc - 1; i++)
 		b3Assert(src[i].m_key <= src[i + 1].m_key);
 
-	b3SortData minData, zeroData, maxData;
-	minData.m_key = -1;
-	minData.m_value = -1;
-	zeroData.m_key = 0;
-	zeroData.m_value = 0;
+	b3SortData minData, /*zeroData,*/ maxData;
+	minData.m_key = (unsigned int)-1;
+	minData.m_value = (unsigned int)-1;
+	// zeroData.m_key = 0;
+	// zeroData.m_value = 0;
 	maxData.m_key = nDst;
 	maxData.m_value = nDst;
 

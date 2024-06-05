@@ -361,7 +361,7 @@ void btGenerateInternalEdgeInfo(btBvhTriangleMeshShape* trimeshShape, btTriangle
 
 			for (int j = 2; j >= 0; j--)
 			{
-				int graphicsindex;
+				int graphicsindex = 0;
                                 switch (indicestype) {
                                         case PHY_INTEGER: graphicsindex = gfxbase[j]; break;
                                         case PHY_SHORT: graphicsindex = ((unsigned short*)gfxbase)[j]; break;
@@ -483,7 +483,7 @@ bool btClampNormal(const btVector3& edge, const btVector3& tri_normal_org, const
 }
 
 /// Changes a btManifoldPoint collision normal to the normal from the mesh.
-void btAdjustInternalEdgeContacts(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, const btCollisionObjectWrapper* colObj1Wrap, int partId0, int index0, int normalAdjustFlags)
+void btAdjustInternalEdgeContacts(btManifoldPoint& cp, const btCollisionObjectWrapper* colObj0Wrap, const btCollisionObjectWrapper* /*colObj1Wrap*/, int partId0, int index0, int normalAdjustFlags)
 {
 	//btAssert(colObj0->getCollisionShape()->getShapeType() == TRIANGLE_SHAPE_PROXYTYPE);
 	if (colObj0Wrap->getCollisionShape()->getShapeType() != TRIANGLE_SHAPE_PROXYTYPE)
@@ -570,7 +570,7 @@ void btAdjustInternalEdgeContacts(btManifoldPoint& cp, const btCollisionObjectWr
 	bool isNearEdge = false;
 
 	int numConcaveEdgeHits = 0;
-	int numConvexEdgeHits = 0;
+	int numConvexEdgeHits = 0; (void)numConvexEdgeHits;
 
 	btVector3 localContactNormalOnB = colObj0Wrap->getWorldTransform().getBasis().transpose() * cp.m_normalWorldOnB;
 	localContactNormalOnB.normalize();  //is this necessary?

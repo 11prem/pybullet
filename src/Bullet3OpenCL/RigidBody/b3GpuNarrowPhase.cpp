@@ -21,7 +21,7 @@ b3GpuNarrowPhase::b3GpuNarrowPhase(cl_context ctx, cl_device_id device, cl_comma
 	m_data = new b3GpuNarrowPhaseInternalData();
 	m_data->m_currentContactBuffer = 0;
 
-	memset(m_data, 0, sizeof(b3GpuNarrowPhaseInternalData));
+	memset((void*)m_data, 0, sizeof(b3GpuNarrowPhaseInternalData));
 
 	m_data->m_config = config;
 
@@ -231,7 +231,7 @@ int b3GpuNarrowPhase::registerPlaneShape(const b3Vector3& planeNormal, float pla
 	return collidableIndex;
 }
 
-int b3GpuNarrowPhase::registerConvexHullShapeInternal(b3ConvexUtility* convexPtr, b3Collidable& col)
+int b3GpuNarrowPhase::registerConvexHullShapeInternal(b3ConvexUtility* convexPtr, b3Collidable& /*col*/)
 {
 	m_data->m_convexData->resize(m_data->m_numAcceleratedShapes + 1);
 	m_data->m_convexPolyhedra.resize(m_data->m_numAcceleratedShapes + 1);
@@ -604,7 +604,7 @@ int b3GpuNarrowPhase::registerConcaveMesh(b3AlignedObjectArray<b3Vector3>* verti
 	return collidableIndex;
 }
 
-int b3GpuNarrowPhase::registerConcaveMeshShape(b3AlignedObjectArray<b3Vector3>* vertices, b3AlignedObjectArray<int>* indices, b3Collidable& col, const float* scaling1)
+int b3GpuNarrowPhase::registerConcaveMeshShape(b3AlignedObjectArray<b3Vector3>* vertices, b3AlignedObjectArray<int>* indices, b3Collidable& /*col*/, const float* scaling1)
 {
 	b3Vector3 scaling = b3MakeVector3(scaling1[0], scaling1[1], scaling1[2]);
 
@@ -676,7 +676,7 @@ cl_mem b3GpuNarrowPhase::getBodiesGpu()
 const struct b3RigidBodyData* b3GpuNarrowPhase::getBodiesCpu() const
 {
 	return &m_data->m_bodyBufferCPU->at(0);
-};
+}
 
 int b3GpuNarrowPhase::getNumBodiesGpu() const
 {

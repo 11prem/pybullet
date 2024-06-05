@@ -13,7 +13,9 @@
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 #include <algorithm>
 #include <assert.h>
 #include <fstream>
@@ -476,7 +478,8 @@ bool LoadOFF(const string& fileName, vector<float>& points, vector<int>& triangl
 	{
 		const string strOFF("OFF");
 		char temp[1024];
-		fscanf(fid, "%s", temp);
+		int len = fscanf(fid, "%s", temp);
+		(void)len;
 		if (string(temp) != strOFF)
 		{
 			logger.Log("Loading error: format not recognized \n");
@@ -488,30 +491,30 @@ bool LoadOFF(const string& fileName, vector<float>& points, vector<int>& triangl
 			int nv = 0;
 			int nf = 0;
 			int ne = 0;
-			fscanf(fid, "%i", &nv);
-			fscanf(fid, "%i", &nf);
-			fscanf(fid, "%i", &ne);
+			len = fscanf(fid, "%i", &nv);
+			len = fscanf(fid, "%i", &nf);
+			len = fscanf(fid, "%i", &ne);
 			points.resize(nv * 3);
 			triangles.resize(nf * 3);
 			const int np = nv * 3;
 			for (int p = 0; p < np; p++)
 			{
-				fscanf(fid, "%f", &(points[p]));
+				len = fscanf(fid, "%f", &(points[p]));
 			}
 			int s;
 			for (int t = 0, r = 0; t < nf; ++t)
 			{
-				fscanf(fid, "%i", &s);
+				len = fscanf(fid, "%i", &s);
 				if (s == 3)
 				{
-					fscanf(fid, "%i", &(triangles[r++]));
-					fscanf(fid, "%i", &(triangles[r++]));
-					fscanf(fid, "%i", &(triangles[r++]));
+					len = fscanf(fid, "%i", &(triangles[r++]));
+					len = fscanf(fid, "%i", &(triangles[r++]));
+					len = fscanf(fid, "%i", &(triangles[r++]));
 				}
 				else  // Fix me: support only triangular meshes
 				{
 					for (int h = 0; h < s; ++h)
-						fscanf(fid, "%i", &s);
+						len = fscanf(fid, "%i", &s);
 				}
 			}
 			fclose(fid);
@@ -640,7 +643,7 @@ bool SaveOFF(const string& fileName, const float* const& points, const int* cons
 }
 
 bool SaveOBJ(ofstream& fout, const double* const& points, const int* const& triangles, const unsigned int& nPoints,
-			 const unsigned int& nTriangles, const Material& material, IVHACD::IUserLogger& logger, int convexPart, int vertexOffset)
+			 const unsigned int& nTriangles, const Material& /*material*/, IVHACD::IUserLogger& logger, int convexPart, int vertexOffset)
 {
 	if (fout.is_open())
 	{

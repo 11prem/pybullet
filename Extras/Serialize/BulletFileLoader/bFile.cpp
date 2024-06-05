@@ -78,6 +78,7 @@ bFile::bFile(const char *filename, const char headerString[7])
                 memset(mFileBuffer, 0, mFileLen+1);
 		size_t bytesRead;
 		bytesRead = fread(mFileBuffer, mFileLen, 1, fp);
+		(void)bytesRead;
 
 		fclose(fp);
 
@@ -629,6 +630,7 @@ char *bFile::readStruct(char *head, bChunkInd &dataChunk)
 		short *oldStruct, *curStruct;
 		char *oldType, *newType;
 		int oldLen, curLen, reverseOld;
+		(void)newType;
 
 		oldStruct = mFileDNA->getStruct(dataChunk.dna_nr);
 		oldType = mFileDNA->getType(oldStruct[0]);
@@ -1508,6 +1510,7 @@ void bFile::writeChunks(FILE *fp, bool fixupPointers)
 		short *oldStruct, *curStruct;
 		char *oldType, *newType;
 		int curLen, reverseOld;
+		(void)newType;
 
 		oldStruct = fileDna->getStruct(dataChunk.dna_nr);
 		oldType = fileDna->getType(oldStruct[0]);
@@ -1542,6 +1545,7 @@ void bFile::writeChunks(FILE *fp, bool fixupPointers)
 			short int *curStruct1;
 			curStruct1 = mMemoryDNA->getStruct(dataChunk.dna_nr);
 			assert(curStruct1 == curStruct);
+			(void)curStruct1;
 
 			char *cur = fixupPointers ? (char *)findLibPointer(dataChunk.oldPtr) : (char *)dataChunk.oldPtr;
 
@@ -1592,7 +1596,7 @@ int bFile::getNextBlock(bChunkInd *dataChunk, const char *dataPtr, const int fla
 				SWITCH_INT(chunk.nr);
 			}
 
-			memcpy(dataChunk, &chunk, sizeof(bChunkInd));
+			memcpy((void*)dataChunk, &chunk, sizeof(bChunkInd));
 		}
 		else
 		{
@@ -1609,7 +1613,7 @@ int bFile::getNextBlock(bChunkInd *dataChunk, const char *dataPtr, const int fla
 				SWITCH_INT(c.nr);
 			}
 
-			memcpy(dataChunk, &c, sizeof(bChunkInd));
+			memcpy((void*)dataChunk, &c, sizeof(bChunkInd));
 		}
 	}
 	else
@@ -1649,7 +1653,7 @@ int bFile::getNextBlock(bChunkInd *dataChunk, const char *dataPtr, const int fla
 				SWITCH_INT(chunk.nr);
 			}
 
-			memcpy(dataChunk, &chunk, sizeof(bChunkInd));
+			memcpy((void*)dataChunk, &chunk, sizeof(bChunkInd));
 		}
 		else
 		{
@@ -1665,7 +1669,7 @@ int bFile::getNextBlock(bChunkInd *dataChunk, const char *dataPtr, const int fla
 				SWITCH_INT(c.dna_nr);
 				SWITCH_INT(c.nr);
 			}
-			memcpy(dataChunk, &c, sizeof(bChunkInd));
+			memcpy((void*)dataChunk, &c, sizeof(bChunkInd));
 		}
 	}
 

@@ -41,12 +41,12 @@ class PrimitiveSet
 public:
 	virtual ~PrimitiveSet(){};
 	virtual PrimitiveSet* Create() const = 0;
-	virtual const size_t GetNPrimitives() const = 0;
-	virtual const size_t GetNPrimitivesOnSurf() const = 0;
-	virtual const size_t GetNPrimitivesInsideSurf() const = 0;
-	virtual const double GetEigenValue(AXIS axis) const = 0;
-	virtual const double ComputeMaxVolumeError() const = 0;
-	virtual const double ComputeVolume() const = 0;
+	virtual size_t GetNPrimitives() const = 0;
+	virtual size_t GetNPrimitivesOnSurf() const = 0;
+	virtual size_t GetNPrimitivesInsideSurf() const = 0;
+	virtual double GetEigenValue(AXIS axis) const = 0;
+	virtual double ComputeMaxVolumeError() const = 0;
+	virtual double ComputeVolume() const = 0;
 	virtual void Clip(const Plane& plane, PrimitiveSet* const positivePart,
 					  PrimitiveSet* const negativePart) const = 0;
 	virtual void Intersect(const Plane& plane, SArray<Vec3<double> >* const positivePts,
@@ -80,12 +80,12 @@ public:
 	//! Constructor.
 	VoxelSet();
 
-	const size_t GetNPrimitives() const { return m_voxels.Size(); }
-	const size_t GetNPrimitivesOnSurf() const { return m_numVoxelsOnSurface; }
-	const size_t GetNPrimitivesInsideSurf() const { return m_numVoxelsInsideSurface; }
-	const double GetEigenValue(AXIS axis) const { return m_D[axis][axis]; }
-	const double ComputeVolume() const { return m_unitVolume * m_voxels.Size(); }
-	const double ComputeMaxVolumeError() const { return m_unitVolume * m_numVoxelsOnSurface; }
+	size_t GetNPrimitives() const { return m_voxels.Size(); }
+	size_t GetNPrimitivesOnSurf() const { return m_numVoxelsOnSurface; }
+	size_t GetNPrimitivesInsideSurf() const { return m_numVoxelsInsideSurface; }
+	double GetEigenValue(AXIS axis) const { return m_D[axis][axis]; }
+	double ComputeVolume() const { return m_unitVolume * m_voxels.Size(); }
+	double ComputeMaxVolumeError() const { return m_unitVolume * m_numVoxelsOnSurface; }
 	const Vec3<short>& GetMinBBVoxels() const { return m_minBBVoxels; }
 	const Vec3<short>& GetMaxBBVoxels() const { return m_maxBBVoxels; }
 	const Vec3<double>& GetMinBB() const { return m_minBB; }
@@ -127,8 +127,8 @@ public:
 	}
 	void AlignToPrincipalAxes(){};
 	void RevertAlignToPrincipalAxes(){};
-	Voxel* const GetVoxels() { return m_voxels.Data(); }
-	const Voxel* const GetVoxels() const { return m_voxels.Data(); }
+	Voxel* GetVoxels() { return m_voxels.Data(); }
+	const Voxel* GetVoxels() const { return m_voxels.Data(); }
 
 private:
 	size_t m_numVoxelsOnSurface;
@@ -165,16 +165,16 @@ public:
 	//! Constructor.
 	TetrahedronSet();
 
-	const size_t GetNPrimitives() const { return m_tetrahedra.Size(); }
-	const size_t GetNPrimitivesOnSurf() const { return m_numTetrahedraOnSurface; }
-	const size_t GetNPrimitivesInsideSurf() const { return m_numTetrahedraInsideSurface; }
+	size_t GetNPrimitives() const { return m_tetrahedra.Size(); }
+	size_t GetNPrimitivesOnSurf() const { return m_numTetrahedraOnSurface; }
+	size_t GetNPrimitivesInsideSurf() const { return m_numTetrahedraInsideSurface; }
 	const Vec3<double>& GetMinBB() const { return m_minBB; }
 	const Vec3<double>& GetMaxBB() const { return m_maxBB; }
 	const Vec3<double>& GetBarycenter() const { return m_barycenter; }
-	const double GetEigenValue(AXIS axis) const { return m_D[axis][axis]; }
-	const double GetSacle() const { return m_scale; }
-	const double ComputeVolume() const;
-	const double ComputeMaxVolumeError() const;
+	double GetEigenValue(AXIS axis) const { return m_D[axis][axis]; }
+	double GetSacle() const { return m_scale; }
+	double ComputeVolume() const;
+	double ComputeMaxVolumeError() const;
 	void ComputeConvexHull(Mesh& meshCH, const size_t sampling = 1) const;
 	void ComputePrincipalAxes();
 	void AlignToPrincipalAxes();
@@ -226,20 +226,20 @@ public:
 				  const size_t dim, const Vec3<double>& barycenter, const double (&rot)[3][3]);
 	unsigned char& GetVoxel(const size_t i, const size_t j, const size_t k)
 	{
-		assert(i < m_dim[0] || i >= 0);
-		assert(j < m_dim[0] || j >= 0);
-		assert(k < m_dim[0] || k >= 0);
+		assert(i < m_dim[0]);
+		assert(j < m_dim[0]);
+		assert(k < m_dim[0]);
 		return m_data[i + j * m_dim[0] + k * m_dim[0] * m_dim[1]];
 	}
 	const unsigned char& GetVoxel(const size_t i, const size_t j, const size_t k) const
 	{
-		assert(i < m_dim[0] || i >= 0);
-		assert(j < m_dim[0] || j >= 0);
-		assert(k < m_dim[0] || k >= 0);
+		assert(i < m_dim[0]);
+		assert(j < m_dim[0]);
+		assert(k < m_dim[0]);
 		return m_data[i + j * m_dim[0] + k * m_dim[0] * m_dim[1]];
 	}
-	const size_t GetNPrimitivesOnSurf() const { return m_numVoxelsOnSurface; }
-	const size_t GetNPrimitivesInsideSurf() const { return m_numVoxelsInsideSurface; }
+	size_t GetNPrimitivesOnSurf() const { return m_numVoxelsOnSurface; }
+	size_t GetNPrimitivesInsideSurf() const { return m_numVoxelsInsideSurface; }
 	void Convert(Mesh& mesh, const VOXEL_VALUE value) const;
 	void Convert(VoxelSet& vset) const;
 	void Convert(TetrahedronSet& tset) const;
@@ -267,8 +267,8 @@ private:
 int TriBoxOverlap(const Vec3<double>& boxcenter, const Vec3<double>& boxhalfsize, const Vec3<double>& triver0,
 				  const Vec3<double>& triver1, const Vec3<double>& triver2);
 template <class T>
-inline void ComputeAlignedPoint(const T* const points, const unsigned int idx, const Vec3<double>& barycenter,
-								const double (&rot)[3][3], Vec3<double>& pt){};
+inline void ComputeAlignedPoint(const T* const /*points*/, const unsigned int /*idx*/, const Vec3<double>& /*barycenter*/,
+								const double (& /*rot*/)[3][3], Vec3<double>&  /*pt*/){}
 template <>
 inline void ComputeAlignedPoint<float>(const float* const points, const unsigned int idx, const Vec3<double>& barycenter, const double (&rot)[3][3], Vec3<double>& pt)
 {
@@ -354,8 +354,8 @@ void Volume::Voxelize(const T* const points, const unsigned int stridePoints, co
 
 	Vec3<double> p[3];
 	size_t i, j, k;
-	size_t i0, j0, k0;
-	size_t i1, j1, k1;
+	size_t i0 = 0, j0 = 0, k0 = 0;
+	size_t i1 = 0, j1 = 0, k1 = 0;
 	Vec3<double> boxcenter;
 	Vec3<double> pt;
 	const Vec3<double> boxhalfsize(0.5, 0.5, 0.5);
@@ -373,7 +373,7 @@ void Volume::Voxelize(const T* const points, const unsigned int stridePoints, co
 			i = static_cast<size_t>(p[c][0] + 0.5);
 			j = static_cast<size_t>(p[c][1] + 0.5);
 			k = static_cast<size_t>(p[c][2] + 0.5);
-			assert(i < m_dim[0] && i >= 0 && j < m_dim[1] && j >= 0 && k < m_dim[2] && k >= 0);
+			assert(i < m_dim[0] && j < m_dim[1] && k < m_dim[2]);
 
 			if (c == 0)
 			{

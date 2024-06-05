@@ -53,7 +53,7 @@ static double /*8*/ QUINCENTUPLE_SPEED = 500;
 static double /*9*/ MILLITUPLE_SPEED = 1000;
 static double /*0*/ MAX_SPEED = MILLITUPLE_SPEED;
 static double /**/ NUM_SPEEDS = 10;
-};  // namespace SimulationSpeeds
+}  // namespace SimulationSpeeds
 
 // add speeds from the namespace here
 static double speeds[] = {
@@ -104,7 +104,7 @@ static char NNCGSOLVER[] = "NNCG Solver";
 static char DANZIGSOLVER[] = "Danzig Solver";
 static char LEMKESOLVER[] = "Lemke Solver";
 
-};  // namespace SolverType
+}  // namespace SolverType
 
 static const char* solverTypes[NUM_SOLVERS];
 
@@ -150,12 +150,12 @@ inline void twxChangeFPS(float framesPerSecond, void*)
 	gFramesPerSecond = framesPerSecond;
 }
 
-inline void twxChangeERPCFM(float notUsed, void*)
+inline void twxChangeERPCFM(float /*notUsed*/, void*)
 {  // function to change ERP/CFM appropriately
 	gChangeErpCfm = true;
 }
 
-inline void changeSolver(int comboboxId, const char* item, void* userPointer)
+inline void changeSolver(int /*comboboxId*/, const char* item, void* /*userPointer*/)
 {  // function to change the solver
 	for (int i = 0; i < NUM_SOLVERS; i++)
 	{
@@ -169,7 +169,7 @@ inline void changeSolver(int comboboxId, const char* item, void* userPointer)
 	b3Printf("No Change");
 }
 
-inline void twxChangeSolverIterations(float notUsed, void* userPtr)
+inline void twxChangeSolverIterations(float /*notUsed*/, void* /*userPtr*/)
 {  // change the solver iterations
 }
 
@@ -190,19 +190,19 @@ inline void clampToCustomSpeedNotches(float speed, void*)
 	gSimulationSpeed = minSpeed;
 }
 
-inline void switchInterpolated(int buttonId, bool buttonState, void* userPointer)
+inline void switchInterpolated(int /*buttonId*/, bool /*buttonState*/, void* /*userPointer*/)
 {  // toggle if interpolation steps are taken
 	gInterpolate = !gInterpolate;
 	//	b3Printf("Interpolate substeps %s", gInterpolate?"on":"off");
 }
 
-inline void switchHeadless(int buttonId, bool buttonState, void* userPointer)
+inline void switchHeadless(int /*buttonId*/, bool /*buttonState*/, void* /*userPointer*/)
 {  // toggle if the demo should run headless
 	gIsHeadless = !gIsHeadless;
 	//	b3Printf("Run headless %s", gIsHeadless?"on":"off");
 }
 
-inline void switchMaximumSpeed(int buttonId, bool buttonState, void* userPointer)
+inline void switchMaximumSpeed(int /*buttonId*/, bool /*buttonState*/, void* /*userPointer*/)
 {   // toggle it the demo should run as fast as possible
 	//	b3Printf("Run maximum speed %s", gMaximumSpeed?"on":"off");
 }
@@ -561,7 +561,7 @@ struct NN3DWalkersTimeWarpBase : public CommonRigidBodyBase
 		return speedUp;
 	}
 
-	void timeWarpSimulation(float deltaTime)  // Override this
+	void timeWarpSimulation(float /*deltaTime*/)  // Override this
 	{
 	}
 
@@ -774,7 +774,7 @@ struct NN3DWalkersTimeWarpBase : public CommonRigidBodyBase
 		m_dynamicsWorld->getSolverInfo().m_numIterations = iterations;
 	}
 
-	void changeFPS(float framesPerSecond)
+	void changeFPS(float /*framesPerSecond*/)
 	{  // change the frames per second
 		fpsStep = 1000.0f / gFramesPerSecond;
 	}
@@ -829,7 +829,7 @@ struct NN3DWalkersTimeWarpBase : public CommonRigidBodyBase
 			mPhysicsStepStart = mLoopTimer.getTimeMilliseconds(); /**!< The physics updates start (in Milliseconds)*/
 			mPhysicsStepEnd = mPhysicsStepStart;
 
-			while (mPhysicsTick > mPhysicsStepEnd - mPhysicsStepStart)
+			while (mPhysicsTick > (long)(mPhysicsStepEnd - mPhysicsStepStart))
 			{ /**!< Update the physics until we run out of time (in Milliseconds) */
 				//			b3Printf("Physics passed: %u", mPhysicsStepEnd - mPhysicsStepStart);
 				double timeStep = fixedPhysicsStepSizeSec; /**!< update the world (in Seconds) */
@@ -850,7 +850,7 @@ struct NN3DWalkersTimeWarpBase : public CommonRigidBodyBase
 
 	void performSpeedStep()
 	{  // force-perform the number of steps needed to achieve a certain speed (safe to too high speeds, meaning the application will lose time, not the physics)
-		if (mFrameTime > gApplicationTick)
+		if ((int)mFrameTime > gApplicationTick)
 		{                                   /** cap frametime to make the application lose time, not the physics (in Milliseconds) */
 			mFrameTime = gApplicationTick;  // This prevents the physics time accumulator to sum up too much time
 		}                                   // The simulation therefore gets slower, but still performs all requested physics steps

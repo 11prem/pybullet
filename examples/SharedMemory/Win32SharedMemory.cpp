@@ -16,9 +16,9 @@ struct Win32SharedMemorySegment
 	TCHAR m_szName[1024];
 
 	Win32SharedMemorySegment()
-		: m_hMapFile(0),
-		  m_buf(0),
-		  m_key(-1)
+		: m_key(-1),
+			m_hMapFile(0),
+			m_buf(0)
 	{
 		m_szName[0] = 0;
 	}
@@ -112,7 +112,7 @@ void* Win32SharedMemory::allocateSharedMemory(int key, int size, bool allowCreat
 	m_internalData->m_segments.push_back(seg);
 	return seg.m_buf;
 }
-void Win32SharedMemory::releaseSharedMemory(int key, int size)
+void Win32SharedMemory::releaseSharedMemory(int key, int /*size*/)
 {
 	Win32SharedMemorySegment* seg = 0;
 	int i = 0;

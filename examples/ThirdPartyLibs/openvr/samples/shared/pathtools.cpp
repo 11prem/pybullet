@@ -451,10 +451,11 @@ bool Path_IsAppBundle(const std::string &sPath)
 {
 #if defined(OSX)
 	NSBundle *bundle = [NSBundle bundleWithPath:[NSString stringWithUTF8String:sPath.c_str()]];
-	bool bisAppBundle = (nullptr != bundle);
+	bool bisAppBundle = (NULL != bundle);
 	[bundle release];
 	return bisAppBundle;
 #else
+	(void)sPath;
 	return false;
 #endif
 }
@@ -639,7 +640,7 @@ bool Path_WriteBinaryFile(const std::string &strFilename, unsigned char *pData, 
 		fclose(f);
 	}
 
-	return written = nSize ? true : false;
+	return (written = nSize ? true : false);
 }
 
 std::string Path_ReadTextFile(const std::string &strFilename)
@@ -703,7 +704,7 @@ bool Path_WriteStringToTextFileAtomic(const std::string &strFilename, const char
 #if defined(_WIN32)
 	std::wstring wsFilename = UTF8to16(strFilename.c_str());
 	std::wstring wsTmpFilename = UTF8to16(strTmpFilename.c_str());
-	if (!::ReplaceFileW(wsFilename.c_str(), wsTmpFilename.c_str(), nullptr, 0, 0, 0))
+	if (!::ReplaceFileW(wsFilename.c_str(), wsTmpFilename.c_str(), NULL, 0, 0, 0))
 	{
 		// if we couldn't ReplaceFile, try a non-atomic write as a fallback
 		if (!Path_WriteStringToTextFile(strFilename, pchData))

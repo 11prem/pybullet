@@ -173,7 +173,7 @@ bool rayConvex(const b3Vector3& rayFromLocal, const b3Vector3& rayToLocal, const
 }
 
 void b3GpuRaycast::castRaysHost(const b3AlignedObjectArray<b3RayInfo>& rays, b3AlignedObjectArray<b3RayHit>& hitResults,
-								int numBodies, const struct b3RigidBodyData* bodies, int numCollidables, const struct b3Collidable* collidables, const struct b3GpuNarrowPhaseInternalData* narrowphaseData)
+								int numBodies, const struct b3RigidBodyData* bodies, int /*numCollidables*/, const struct b3Collidable* collidables, const struct b3GpuNarrowPhaseInternalData* narrowphaseData)
 {
 	//	return castRays(rays,hitResults,numBodies,bodies,numCollidables,collidables);
 
@@ -186,6 +186,10 @@ void b3GpuRaycast::castRaysHost(const b3AlignedObjectArray<b3RayInfo>& rays, b3A
 
 		int hitBodyIndex = -1;
 		b3Vector3 hitNormal;
+		hitNormal.m_floats[0] = 0.0f;
+		hitNormal.m_floats[1] = 0.0f;
+		hitNormal.m_floats[2] = 0.0f;
+		hitNormal.m_floats[3] = 0.0f;
 
 		for (int b = 0; b < numBodies; b++)
 		{
@@ -205,6 +209,7 @@ void b3GpuRaycast::castRaysHost(const b3AlignedObjectArray<b3RayInfo>& rays, b3A
 						hitNormal = (hitPoint - bodies[b].m_pos).normalize();
 					}
 				}
+				// fallthrough
 				case SHAPE_CONVEX_HULL:
 				{
 					b3Transform convexWorldTransform;
@@ -247,7 +252,7 @@ void b3GpuRaycast::castRaysHost(const b3AlignedObjectArray<b3RayInfo>& rays, b3A
 }
 ///todo: add some acceleration structure (AABBs, tree etc)
 void b3GpuRaycast::castRays(const b3AlignedObjectArray<b3RayInfo>& rays, b3AlignedObjectArray<b3RayHit>& hitResults,
-							int numBodies, const struct b3RigidBodyData* bodies, int numCollidables, const struct b3Collidable* collidables,
+							int numBodies, const struct b3RigidBodyData* /*bodies*/, int /*numCollidables*/, const struct b3Collidable* /*collidables*/,
 							const struct b3GpuNarrowPhaseInternalData* narrowphaseData, class b3GpuBroadphaseInterface* broadphase)
 {
 	//castRaysHost(rays,hitResults,numBodies,bodies,numCollidables,collidables,narrowphaseData);
@@ -299,7 +304,7 @@ void b3GpuRaycast::castRays(const b3AlignedObjectArray<b3RayInfo>& rays, b3Align
 
 		int numRayRigidPairs = -1;
 		m_data->m_gpuNumRayRigidPairs->copyToHostPointer(&numRayRigidPairs, 1);
-		if (numRayRigidPairs > m_data->m_gpuRayRigidPairs->size())
+		if (numRayRigidPairs > (int)m_data->m_gpuRayRigidPairs->size())
 		{
 			numRayRigidPairs = m_data->m_gpuRayRigidPairs->size();
 			m_data->m_gpuNumRayRigidPairs->copyFromHostPointer(&numRayRigidPairs, 1);

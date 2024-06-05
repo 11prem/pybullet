@@ -62,7 +62,7 @@ static btVector4 sJointCurveColors[8] =
 
 };
 
-void toggleUseInverseModel(int buttonId, bool buttonState, void* userPointer)
+void toggleUseInverseModel(int /*buttonId*/, bool /*buttonState*/, void* /*userPointer*/)
 {
 	useInverseModel = !useInverseModel;
 	// todo(thomas) is there a way to get a toggle button with changing text?
@@ -220,17 +220,17 @@ void InverseDynamicsExample::initPhysics()
 
 		if (m_timeSeriesCanvas && m_guiHelper->getParameterInterface())
 		{
-			for (std::size_t dof = 0; dof < qd.size(); dof++)
+			for (unsigned int dof = 0; dof < qd.size(); dof++)
 			{
 				qd[dof] = 0;
 				char tmp[25];
-				sprintf(tmp, "q_desired[%lu]", dof);
+				sprintf(tmp, "q_desired[%u]", dof);
 				qd_name[dof] = tmp;
 				SliderParams slider(qd_name[dof].c_str(), &qd[dof]);
 				slider.m_minVal = -3.14;
 				slider.m_maxVal = 3.14;
 
-				sprintf(tmp, "q[%lu]", dof);
+				sprintf(tmp, "q[%lu]", (unsigned long)dof);
 				q_name[dof] = tmp;
 				m_guiHelper->getParameterInterface()->registerSliderFloatParameter(slider);
 				btVector4 color = sJointCurveColors[dof & 7];
@@ -242,7 +242,7 @@ void InverseDynamicsExample::initPhysics()
 	m_guiHelper->autogenerateGraphicsObjects(m_dynamicsWorld);
 }
 
-void InverseDynamicsExample::stepSimulation(float deltaTime)
+void InverseDynamicsExample::stepSimulation(float /*deltaTime*/)
 {
 	if (m_multiBody)
 	{

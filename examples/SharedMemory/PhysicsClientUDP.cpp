@@ -166,7 +166,7 @@ struct UdpNetworkedInternalData
 						printf(
 							"A packet of length %lu containing '%s' was "
 							"received from %s on channel %u.\n",
-							m_event.packet->dataLength,
+							(unsigned long)m_event.packet->dataLength,
 							(char*)m_event.packet->data,
 							(char*)m_event.peer->data,
 							m_event.channelID);
@@ -222,7 +222,7 @@ struct UdpNetworkedInternalData
 						printf(
 							"A packet of length %lu containing '%s' was "
 							"received from %s on channel %u.\n",
-							m_event.packet->dataLength,
+							(unsigned long)m_event.packet->dataLength,
 							(char*)m_event.packet->data,
 							(char*)m_event.peer->data,
 							m_event.channelID);
@@ -230,7 +230,7 @@ struct UdpNetworkedInternalData
 
 					int packetSizeInBytes = b3DeserializeInt(m_event.packet->data);
 
-					if (packetSizeInBytes == m_event.packet->dataLength)
+					if (packetSizeInBytes == (int)m_event.packet->dataLength)
 					{
 						SharedMemoryStatus* statPtr = (SharedMemoryStatus*)&m_event.packet->data[4];
 						if (statPtr->m_type == CMD_STEP_FORWARD_SIMULATION_COMPLETED)
@@ -297,11 +297,11 @@ enum UDPCommandEnums
 	eUDP_Connected,
 	eUDP_ConnectionFailed,
 	eUDP_DisconnectRequest,
-	eUDP_Disconnected,
+	eUDP_Disconnected
 
 };
 
-void UDPThreadFunc(void* userPtr, void* lsMemory)
+void UDPThreadFunc(void* userPtr, void* /*lsMemory*/)
 {
 	printf("UDPThreadFunc thread started\n");
 	//	UDPThreadLocalStorage* localStorage = (UDPThreadLocalStorage*)lsMemory;
@@ -324,6 +324,7 @@ void UDPThreadFunc(void* userPtr, void* lsMemory)
 			b3Clock::usleep(0);
 
 			deltaTimeInSeconds += double(clock.getTimeMicroseconds()) / 1000000.;
+			(void)deltaTimeInSeconds;
 
 			{
 				clock.reset();
@@ -371,6 +372,7 @@ void UDPThreadFunc(void* userPtr, void* lsMemory)
 						}
 						int res;
 						res = enet_peer_send(args->m_peer, 0, packet);
+						(void)res;
 						args->m_cs->lock();
 						args->m_hasCommand = false;
 						args->m_cs->unlock();
@@ -435,7 +437,7 @@ UdpNetworkedPhysicsProcessor::~UdpNetworkedPhysicsProcessor()
 	delete m_data;
 }
 
-bool UdpNetworkedPhysicsProcessor::processCommand(const struct SharedMemoryCommand& clientCmd, struct SharedMemoryStatus& serverStatusOut, char* bufferServerToClient, int bufferSizeInBytes)
+bool UdpNetworkedPhysicsProcessor::processCommand(const struct SharedMemoryCommand& clientCmd, struct SharedMemoryStatus& /*serverStatusOut*/, char* /*bufferServerToClient*/, int /*bufferSizeInBytes*/)
 {
 	if (gVerboseNetworkMessagesClient)
 	{
@@ -513,15 +515,15 @@ bool UdpNetworkedPhysicsProcessor::receiveStatus(struct SharedMemoryStatus& serv
 	return hasStatus;
 }
 
-void UdpNetworkedPhysicsProcessor::renderScene(int renderFlags)
+void UdpNetworkedPhysicsProcessor::renderScene(int /*renderFlags*/)
 {
 }
 
-void UdpNetworkedPhysicsProcessor::physicsDebugDraw(int debugDrawFlags)
+void UdpNetworkedPhysicsProcessor::physicsDebugDraw(int /*debugDrawFlags*/)
 {
 }
 
-void UdpNetworkedPhysicsProcessor::setGuiHelper(struct GUIHelperInterface* guiHelper)
+void UdpNetworkedPhysicsProcessor::setGuiHelper(struct GUIHelperInterface* /*guiHelper*/)
 {
 }
 

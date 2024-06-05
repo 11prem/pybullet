@@ -12,7 +12,9 @@
  
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include "LinearMath/btConvexHullComputer.h"
 #include "vhacdMesh.h"
@@ -50,7 +52,7 @@ double Mesh::ComputeVolume() const
 
 	Vec3<double> ver0, ver1, ver2;
 	double totalVolume = 0.0;
-	for (int t = 0; t < nT; t++)
+	for (unsigned int t = 0; t < nT; t++)
 	{
 		const Vec3<int>& tri = GetTriangle(t);
 		ver0 = GetPoint(tri[0]);
@@ -128,7 +130,7 @@ bool Mesh::IsInside(const Vec3<double>& pt) const
 	}
 	Vec3<double> ver0, ver1, ver2;
 	double volume;
-	for (int t = 0; t < nT; t++)
+	for (unsigned int t = 0; t < nT; t++)
 	{
 		const Vec3<int>& tri = GetTriangle(t);
 		ver0 = GetPoint(tri[0]);
@@ -291,7 +293,8 @@ bool Mesh::LoadOFF(const std::string& fileName, bool invert)
 	{
 		const std::string strOFF("OFF");
 		char temp[1024];
-		fscanf(fid, "%s", temp);
+		int len = fscanf(fid, "%s", temp);
+		(void)len;
 		if (std::string(temp) != strOFF)
 		{
 			fclose(fid);
@@ -302,18 +305,18 @@ bool Mesh::LoadOFF(const std::string& fileName, bool invert)
 			int nv = 0;
 			int nf = 0;
 			int ne = 0;
-			fscanf(fid, "%i", &nv);
-			fscanf(fid, "%i", &nf);
-			fscanf(fid, "%i", &ne);
+			len = fscanf(fid, "%i", &nv);
+			len = fscanf(fid, "%i", &nf);
+			len = fscanf(fid, "%i", &ne);
 			m_points.Resize(nv);
 			m_triangles.Resize(nf);
 			Vec3<double> coord;
 			float x, y, z;
 			for (int p = 0; p < nv; p++)
 			{
-				fscanf(fid, "%f", &x);
-				fscanf(fid, "%f", &y);
-				fscanf(fid, "%f", &z);
+				len = fscanf(fid, "%f", &x);
+				len = fscanf(fid, "%f", &y);
+				len = fscanf(fid, "%f", &z);
 				m_points[p][0] = x;
 				m_points[p][1] = y;
 				m_points[p][2] = z;
@@ -321,12 +324,12 @@ bool Mesh::LoadOFF(const std::string& fileName, bool invert)
 			int i, j, k, s;
 			for (int t = 0; t < nf; ++t)
 			{
-				fscanf(fid, "%i", &s);
+				len = fscanf(fid, "%i", &s);
 				if (s == 3)
 				{
-					fscanf(fid, "%i", &i);
-					fscanf(fid, "%i", &j);
-					fscanf(fid, "%i", &k);
+					len = fscanf(fid, "%i", &i);
+					len = fscanf(fid, "%i", &j);
+					len = fscanf(fid, "%i", &k);
 					m_triangles[t][0] = i;
 					if (invert)
 					{
@@ -342,7 +345,7 @@ bool Mesh::LoadOFF(const std::string& fileName, bool invert)
 				else  // Fix me: support only triangular meshes
 				{
 					for (int h = 0; h < s; ++h)
-						fscanf(fid, "%i", &s);
+						len = fscanf(fid, "%i", &s);
 				}
 			}
 			fclose(fid);

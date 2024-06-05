@@ -393,7 +393,8 @@ public:
 		int littleEndian = 1;
 		littleEndian = ((char*)&littleEndian)[0];
 
-		if (sizeof(void*) == 8)
+		const bool is64bitSystem = sizeof(void*) == 8;
+		if (is64bitSystem)
 		{
 			buffer[7] = '-';
 		}
@@ -431,7 +432,7 @@ public:
 		writeDNA();
 
 		//if we didn't pre-allocate a buffer, we need to create a contiguous buffer now
-		int mysize = 0;
+		int mysize = 0; (void)mysize;
 		if (!m_totalSize)
 		{
 			if (m_buffer)

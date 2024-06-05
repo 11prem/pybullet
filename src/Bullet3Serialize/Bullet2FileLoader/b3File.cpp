@@ -75,6 +75,7 @@ bFile::bFile(const char *filename, const char headerString[7])
 		mFileBuffer = (char *)malloc(mFileLen + 1);
 		int bytesRead;
 		bytesRead = fread(mFileBuffer, mFileLen, 1, fp);
+		(void)bytesRead;
 
 		fclose(fp);
 
@@ -595,7 +596,7 @@ char *bFile::readStruct(char *head, bChunkInd &dataChunk)
 	{
 		// Ouch! need to rebuild the struct
 		short *oldStruct, *curStruct;
-		char *oldType, *newType;
+		char *oldType, *newType; (void)newType;
 		int oldLen, curLen, reverseOld;
 
 		oldStruct = mFileDNA->getStruct(dataChunk.dna_nr);
@@ -1476,6 +1477,7 @@ void bFile::writeChunks(FILE *fp, bool fixupPointers)
 		char *oldType, *newType;
 		int oldLen, curLen, reverseOld;
 
+		(void)newType; (void)oldLen;
 		oldStruct = fileDna->getStruct(dataChunk.dna_nr);
 		oldType = fileDna->getType(oldStruct[0]);
 		oldLen = fileDna->getLength(oldStruct[0]);
@@ -1509,6 +1511,7 @@ void bFile::writeChunks(FILE *fp, bool fixupPointers)
 			short int *curStruct1;
 			curStruct1 = mMemoryDNA->getStruct(dataChunk.dna_nr);
 			assert(curStruct1 == curStruct);
+			(void)curStruct1;
 
 			char *cur = fixupPointers ? (char *)findLibPointer(dataChunk.oldPtr) : (char *)dataChunk.oldPtr;
 
@@ -1559,7 +1562,7 @@ int bFile::getNextBlock(bChunkInd *dataChunk, const char *dataPtr, const int fla
 				B3_SWITCH_INT(chunk.nr);
 			}
 
-			memcpy(dataChunk, &chunk, sizeof(bChunkInd));
+			memcpy((void*)dataChunk, &chunk, sizeof(bChunkInd));
 		}
 		else
 		{
@@ -1576,7 +1579,7 @@ int bFile::getNextBlock(bChunkInd *dataChunk, const char *dataPtr, const int fla
 				B3_SWITCH_INT(c.nr);
 			}
 
-			memcpy(dataChunk, &c, sizeof(bChunkInd));
+			memcpy((void*)dataChunk, &c, sizeof(bChunkInd));
 		}
 	}
 	else
@@ -1616,7 +1619,7 @@ int bFile::getNextBlock(bChunkInd *dataChunk, const char *dataPtr, const int fla
 				B3_SWITCH_INT(chunk.nr);
 			}
 
-			memcpy(dataChunk, &chunk, sizeof(bChunkInd));
+			memcpy((void*)dataChunk, &chunk, sizeof(bChunkInd));
 		}
 		else
 		{
@@ -1632,7 +1635,7 @@ int bFile::getNextBlock(bChunkInd *dataChunk, const char *dataPtr, const int fla
 				B3_SWITCH_INT(c.dna_nr);
 				B3_SWITCH_INT(c.nr);
 			}
-			memcpy(dataChunk, &c, sizeof(bChunkInd));
+			memcpy((void*)dataChunk, &c, sizeof(bChunkInd));
 		}
 	}
 

@@ -186,7 +186,7 @@ static unsigned int FloatFlip(float fl)
 	unsigned int f = *(unsigned int*)&fl;
 	unsigned int mask = -(int)(f >> 31) | 0x80000000;
 	return f ^ mask;
-};
+}
 
 void b3GpuSapBroadphase::init3dSap()
 {
@@ -251,17 +251,17 @@ static bool b3PairCmp(const b3Int4& p, const b3Int4& q)
 static bool operator==(const b3Int4& a, const b3Int4& b)
 {
 	return a.x == b.x && a.y == b.y;
-};
+}
 
 static bool operator<(const b3Int4& a, const b3Int4& b)
 {
 	return a.x < b.x || (a.x == b.x && a.y < b.y);
-};
+}
 
 static bool operator>(const b3Int4& a, const b3Int4& b)
 {
 	return a.x > b.x || (a.x == b.x && a.y > b.y);
-};
+}
 
 b3AlignedObjectArray<b3Int4> addedHostPairs;
 b3AlignedObjectArray<b3Int4> removedHostPairs;
@@ -580,7 +580,7 @@ void b3GpuSapBroadphase::calculateOverlappingPairsHostIncremental3Sap()
 					if (dmin != 0)
 					{
 						int stepMin = dmin < 0 ? -1 : 1;
-						for (int j = prevMinIndex; j != curMinIndex; j += stepMin)
+						for (int j = prevMinIndex; j != (int)curMinIndex; j += stepMin)
 						{
 							int otherIndex2 = m_sortedAxisCPU[axis][otherbuffer][j].y;
 							int otherIndex = otherIndex2 / 2;
@@ -661,7 +661,7 @@ void b3GpuSapBroadphase::calculateOverlappingPairsHostIncremental3Sap()
 					if (dmax != 0)
 					{
 						int stepMax = dmax < 0 ? -1 : 1;
-						for (int j = prevMaxIndex; j != curMaxIndex; j += stepMax)
+						for (int j = prevMaxIndex; j != (int)curMaxIndex; j += stepMax)
 						{
 							int otherIndex2 = m_sortedAxisCPU[axis][otherbuffer][j].y;
 							int otherIndex = otherIndex2 / 2;
@@ -812,7 +812,7 @@ void b3GpuSapBroadphase::calculateOverlappingPairsHostIncremental3Sap()
 	prevPair.x = -1;
 	prevPair.y = -1;
 
-	int uniqueAddedPairs = 0;
+	int uniqueAddedPairs = 0; (void)uniqueAddedPairs;
 	b3AlignedObjectArray<b3Int4> actualAddedPairs;
 
 	{
@@ -865,7 +865,7 @@ void b3GpuSapBroadphase::calculateOverlappingPairsHost(int maxPairs)
 	//	if (m_currentBuffer>=0)
 	//	return calculateOverlappingPairsHostIncremental3Sap();
 
-	b3Assert(m_allAabbsCPU.size() == m_allAabbsGPU.size());
+	b3Assert(m_allAabbsCPU.size() == (int)m_allAabbsGPU.size());
 	m_allAabbsGPU.copyToHost(m_allAabbsCPU);
 
 	int axis = 0;
@@ -1014,7 +1014,7 @@ void b3GpuSapBroadphase::calculateOverlappingPairs(int maxPairs)
 	{
 		//bool syncOnHost = false;
 
-		int numSmallAabbs = m_smallAabbsMappingCPU.size();
+		size_t numSmallAabbs = m_smallAabbsMappingCPU.size();
 		if (m_prefixScanFloat4 && numSmallAabbs)
 		{
 			B3_PROFILE("GPU compute best variance axis");
@@ -1238,7 +1238,7 @@ void b3GpuSapBroadphase::writeAabbsToGpu()
 	m_allAabbsGPU.copyFromHost(m_allAabbsCPU);  //might not be necessary, the 'setupGpuAabbsFull' already takes care of this
 }
 
-void b3GpuSapBroadphase::createLargeProxy(const b3Vector3& aabbMin, const b3Vector3& aabbMax, int userPtr, int collisionFilterGroup, int collisionFilterMask)
+void b3GpuSapBroadphase::createLargeProxy(const b3Vector3& aabbMin, const b3Vector3& aabbMax, int userPtr, int /*collisionFilterGroup*/, int /*collisionFilterMask*/)
 {
 	int index = userPtr;
 	b3SapAabb aabb;
@@ -1254,7 +1254,7 @@ void b3GpuSapBroadphase::createLargeProxy(const b3Vector3& aabbMin, const b3Vect
 	m_allAabbsCPU.push_back(aabb);
 }
 
-void b3GpuSapBroadphase::createProxy(const b3Vector3& aabbMin, const b3Vector3& aabbMax, int userPtr, int collisionFilterGroup, int collisionFilterMask)
+void b3GpuSapBroadphase::createProxy(const b3Vector3& aabbMin, const b3Vector3& aabbMax, int userPtr, int /*collisionFilterGroup*/, int /*collisionFilterMask*/)
 {
 	int index = userPtr;
 	b3SapAabb aabb;

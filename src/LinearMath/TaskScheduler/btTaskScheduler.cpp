@@ -3,8 +3,10 @@
 #include "LinearMath/btAlignedObjectArray.h"
 #include "LinearMath/btThreads.h"
 #include "LinearMath/btQuickprof.h"
+#include "LinearMath/btOverride.h"
 #include <stdio.h>
 #include <algorithm>
+#include <cstring>
 
 #if BT_THREADSAFE
 
@@ -35,7 +37,7 @@ struct WorkerThreadStatus
 		kInvalid,
 		kWaitingForWork,
 		kWorking,
-		kSleeping,
+		kSleeping
 	};
 };
 
@@ -52,7 +54,7 @@ public:
 		kInvalid,
 		kGoToSleep,         // go to sleep
 		kStayAwakeButIdle,  // wait for not checking job queue
-		kScanForJobs,       // actively scan job queue for jobs
+		kScanForJobs        // actively scan job queue for jobs
 	};
 	WorkerThreadDirectives()
 	{
@@ -114,7 +116,7 @@ public:
 		m_begin = iBegin;
 		m_end = iEnd;
 	}
-	virtual void executeJob(int threadId) BT_OVERRIDE
+	virtual void executeJob(int /*threadId*/) BT_OVERRIDE
 	{
 		BT_PROFILE("executeJob");
 
@@ -195,11 +197,13 @@ public:
 	{
 		m_jobMem = NULL;
 		m_jobMemSize = 0;
+		m_queueIsEmpty = true;
 		m_threadSupport = NULL;
 		m_queueLock = NULL;
 		m_headIndex = 0;
 		m_tailIndex = 0;
 		m_useSpinMutex = false;
+		memset(&m_cachePadding,0,sizeof(m_cachePadding));
 	}
 	~JobQueue()
 	{

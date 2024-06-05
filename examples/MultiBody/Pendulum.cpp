@@ -164,6 +164,7 @@ void Pendulum::stepSimulation(float deltaTime)
 	m_multiBody->addJointTorque(0, 20.0);
 #ifdef USE_GTEST
 	m_dynamicsWorld->stepSimulation(1. / 1000.0, 0);
+	(void)deltaTime;
 #else
 	m_dynamicsWorld->stepSimulation(deltaTime);
 #endif
@@ -183,7 +184,7 @@ TEST(BulletDynamicsTest, pendulum)
 	DummyGUIHelper noGfx;
 	Pendulum* setup = new Pendulum(&noGfx);
 	setup->initPhysics();
-	int numGoldValues = sizeof(sPendulumGold) / sizeof(float);
+	int numGoldValues = sizeof(sPendulumGold) / sizeof(btScalar);
 	for (int i = 0; i < 2000; i++)
 	{
 		setup->stepSimulation(0.001);

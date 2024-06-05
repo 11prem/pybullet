@@ -1,7 +1,5 @@
 #include "PhysicsClientTCP.h"
 
-#include "ActiveSocket.h"
-
 #include <stdio.h>
 #include <string.h>
 #include "../Utils/b3Clock.h"
@@ -11,6 +9,7 @@
 #include <string>
 #include "Bullet3Common/b3Logging.h"
 #include "Bullet3Common/b3AlignedObjectArray.h"
+#include "ActiveSocket.h"
 
 unsigned int b3DeserializeInt2(const unsigned char* input)
 {
@@ -152,7 +151,7 @@ TcpNetworkedPhysicsProcessor::~TcpNetworkedPhysicsProcessor()
 	delete m_data;
 }
 
-bool TcpNetworkedPhysicsProcessor::processCommand(const struct SharedMemoryCommand& clientCmd, struct SharedMemoryStatus& serverStatusOut, char* bufferServerToClient, int bufferSizeInBytes)
+bool TcpNetworkedPhysicsProcessor::processCommand(const struct SharedMemoryCommand& clientCmd, struct SharedMemoryStatus& /*serverStatusOut*/, char* /*bufferServerToClient*/, int /*bufferSizeInBytes*/)
 {
 	if (gVerboseNetworkMessagesClient2)
 	{
@@ -219,15 +218,15 @@ bool TcpNetworkedPhysicsProcessor::receiveStatus(struct SharedMemoryStatus& serv
 	return hasStatus;
 }
 
-void TcpNetworkedPhysicsProcessor::renderScene(int renderFlags)
+void TcpNetworkedPhysicsProcessor::renderScene(int /*renderFlags*/)
 {
 }
 
-void TcpNetworkedPhysicsProcessor::physicsDebugDraw(int debugDrawFlags)
+void TcpNetworkedPhysicsProcessor::physicsDebugDraw(int /*debugDrawFlags*/)
 {
 }
 
-void TcpNetworkedPhysicsProcessor::setGuiHelper(struct GUIHelperInterface* guiHelper)
+void TcpNetworkedPhysicsProcessor::setGuiHelper(struct GUIHelperInterface* /*guiHelper*/)
 {
 }
 

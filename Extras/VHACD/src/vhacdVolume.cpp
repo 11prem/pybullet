@@ -12,7 +12,9 @@
  
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 #include "LinearMath/btConvexHullComputer.h"
 #include "vhacdVolume.h"
 #include <algorithm>
@@ -25,7 +27,7 @@ namespace VHACD
 {
 /********************************************************/
 /* AABB-triangle overlap test code                      */
-/* by Tomas Akenine-Möller                              */
+/* by Tomas Akenine-MÃ¶ller                              */
 /* Function: int triBoxOverlap(float boxcenter[3],      */
 /*          float boxhalfsize[3],float triverts[3][3]); */
 /* History:                                             */
@@ -1493,23 +1495,23 @@ void TetrahedronSet::AddClippedTetrahedra(const Vec3<double> (&pts)[10], const i
 	}
 }
 
-void TetrahedronSet::Intersect(const Plane& plane,
-							   SArray<Vec3<double> >* const positivePts,
-							   SArray<Vec3<double> >* const negativePts,
-							   const size_t sampling) const
+void TetrahedronSet::Intersect(const Plane& /*plane*/,
+							   SArray<Vec3<double> >* const /*positivePts*/,
+							   SArray<Vec3<double> >* const /*negativePts*/,
+							   const size_t /*sampling*/) const
 {
 	const size_t nTetrahedra = m_tetrahedra.Size();
 	if (nTetrahedra == 0)
 		return;
 }
-void TetrahedronSet::ComputeExteriorPoints(const Plane& plane,
-										   const Mesh& mesh,
-										   SArray<Vec3<double> >* const exteriorPts) const
+void TetrahedronSet::ComputeExteriorPoints(const Plane& /*plane*/,
+										   const Mesh& /*mesh*/,
+										   SArray<Vec3<double> >* const /*exteriorPts*/) const
 {
 }
-void TetrahedronSet::ComputeClippedVolumes(const Plane& plane,
-										   double& positiveVolume,
-										   double& negativeVolume) const
+void TetrahedronSet::ComputeClippedVolumes(const Plane& /*plane*/,
+										   double& /*positiveVolume*/,
+										   double& /*negativeVolume*/) const
 {
 	const size_t nTetrahedra = m_tetrahedra.Size();
 	if (nTetrahedra == 0)
@@ -1637,6 +1639,7 @@ void TetrahedronSet::Clip(const Plane& plane,
 		else
 		{
 			int nnew = 0;
+			(void)nnew;
 			for (int j = 0; j < 6; ++j)
 			{
 				if (sign[edges[j][0]] * sign[edges[j][1]] == -1)
@@ -1684,9 +1687,9 @@ void TetrahedronSet::Convert(Mesh& mesh, const VOXEL_VALUE value) const
 		}
 	}
 }
-const double TetrahedronSet::ComputeVolume() const
+double TetrahedronSet::ComputeVolume() const
 {
-	const size_t nTetrahedra = m_tetrahedra.Size();
+	size_t nTetrahedra = m_tetrahedra.Size();
 	if (nTetrahedra == 0)
 		return 0.0;
 	double volume = 0.0;
@@ -1697,7 +1700,7 @@ const double TetrahedronSet::ComputeVolume() const
 	}
 	return volume / 6.0;
 }
-const double TetrahedronSet::ComputeMaxVolumeError() const
+double TetrahedronSet::ComputeMaxVolumeError() const
 {
 	const size_t nTetrahedra = m_tetrahedra.Size();
 	if (nTetrahedra == 0)
